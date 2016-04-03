@@ -13,12 +13,12 @@ import itertools
 
 from django.utils import timezone
 
-from .base import CorvidTestCase
+from .base import FuglTestCase
 from main.models import (Project, Page, Post, Category, Theme, ProjectPlugin,
                          PagePlugin)
 
 
-class CloneProjectTestCase(CorvidTestCase):
+class CloneProjectTestCase(FuglTestCase):
 
     def setUp(self):
         super().setUpTheme()

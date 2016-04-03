@@ -50,11 +50,11 @@ UpdatePostView:
 
 from django.test import Client
 from django.utils import timezone
-from .base import CorvidTestCase
+from .base import FuglTestCase
 from main.models import Post, User, Project, Category
 
 
-class CreatePostViewTestCase(CorvidTestCase):
+class CreatePostViewTestCase(FuglTestCase):
 
     def setUp(self):
         super().setUpTheme()
@@ -160,7 +160,7 @@ class CreatePostViewTestCase(CorvidTestCase):
         self.assertEqual(resp.status_code, 404)
 
 
-class DeletePostViewTestCase(CorvidTestCase):
+class DeletePostViewTestCase(FuglTestCase):
 
     def setUp(self):
         super().setUpTheme()
@@ -288,7 +288,7 @@ class DeletePostViewTestCase(CorvidTestCase):
         self.assertEqual(resp.status_code, 404)
 
 
-class UpdatePostViewTestCase(CorvidTestCase):
+class UpdatePostViewTestCase(FuglTestCase):
 
     def setUp(self):
         super().setUpTheme()

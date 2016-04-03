@@ -1,12 +1,12 @@
 """
-Base class for Corvid tests that set up some database stuff.
+Base class for Fugl tests that set up some database stuff.
 """
 
 from django.test import TestCase
 from main.models import User, Theme
 
 
-class CorvidTestCase(TestCase):
+class FuglTestCase(TestCase):
 
     def setUpTheme(self):
         self.admin_password = 'cock-of-the-rock'

@@ -3,10 +3,10 @@ Test for main.views.user.UserHomeView.
 """
 
 from django.test import Client
-from .base import CorvidTestCase
+from .base import FuglTestCase
 
 
-class UserHomeViewTestCase(CorvidTestCase):
+class UserHomeViewTestCase(FuglTestCase):
 
     def setUp(self):
         super().setUpTheme()
