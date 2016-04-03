@@ -22,7 +22,7 @@ class SiteGenerationView(ProtectedViewMixin, View):
             pprint(e)
             ctx = {
                 'message': "Actually, we derped. You can redeem this"
-                           " page for a free hug from the Corvidae. Sorry :(",
+                           " page for a free hug from the Fugle. Sorry :(",
                 'link_url': '/project/{0}/{1}'.format(kwargs['owner'], kwargs['proj_title']),
                 'link_text': 'Return to Project Home',
             }
