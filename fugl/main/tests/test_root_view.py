@@ -25,7 +25,7 @@ class RootViewTestCase(CorvidTestCase):
                                           password=self.admin_password))
         response = self.client.get('/')
         self.assertEqual(response.status_code, 302)
-        self.assertIn('/home/', response.url)
+        self.assertIn('/home', response.url)
 
     def test_other_response_types_500(self):
         self.assertTrue(self.client.login(username=self.admin_user.username,
