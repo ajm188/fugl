@@ -18,6 +18,8 @@ venv:
 	virtualenv -p python3 venv
 	venv/bin/pip install -r requirements.txt
 
-clean:
-	rm -rf venv/
+wipe-cache:
 	find ./ -type d -name '__pycache__' | xargs rm -rf
+
+clean: wipe-cache
+	rm -rf venv/
