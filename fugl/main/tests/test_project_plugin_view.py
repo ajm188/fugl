@@ -47,11 +47,11 @@ DeletePluginViewTestCase:
 
 from django.test import Client
 from django.db import transaction
-from .base import CorvidTestCase
+from .base import FuglTestCase
 from main.models import User, Project, ProjectPlugin
 
 
-class CreateProjectPluginViewTestCase(CorvidTestCase):
+class CreateProjectPluginViewTestCase(FuglTestCase):
 
     def setUp(self):
         super().setUpTheme()
@@ -175,7 +175,7 @@ class CreateProjectPluginViewTestCase(CorvidTestCase):
         self.assertEqual(response.status_code, 404)
 
 
-class DeleteProjectPluginViewTestCase(CorvidTestCase):
+class DeleteProjectPluginViewTestCase(FuglTestCase):
     def setUp(self):
         super().setUpTheme()
         self.client = Client()
@@ -304,7 +304,7 @@ class DeleteProjectPluginViewTestCase(CorvidTestCase):
         self.assertEqual(response.status_code, 404)
 
 
-class UpdateProjectPluginViewTestCase(CorvidTestCase):
+class UpdateProjectPluginViewTestCase(FuglTestCase):
     def setUp(self):
         super().setUpTheme()
         self.client = Client()

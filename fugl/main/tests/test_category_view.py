@@ -47,11 +47,11 @@ DeleteCategoryViewTestCase:
 
 from django.test import Client
 from django.db import transaction
-from .base import CorvidTestCase
+from .base import FuglTestCase
 from main.models import User, Project, Category
 
 
-class CreateCategoryViewTestCase(CorvidTestCase):
+class CreateCategoryViewTestCase(FuglTestCase):
 
     def setUp(self):
         super().setUpTheme()
@@ -170,7 +170,7 @@ class CreateCategoryViewTestCase(CorvidTestCase):
         self.assertEqual(response.status_code, 404)
 
 
-class DeleteCategoryViewTestCase(CorvidTestCase):
+class DeleteCategoryViewTestCase(FuglTestCase):
 
     def setUp(self):
         super().setUpTheme()
@@ -299,7 +299,7 @@ class DeleteCategoryViewTestCase(CorvidTestCase):
         self.assertEqual(response.status_code, 404)
 
 
-class UpdateCategoryViewTestCase(CorvidTestCase):
+class UpdateCategoryViewTestCase(FuglTestCase):
 
     def setUp(self):
         super().setUpTheme()

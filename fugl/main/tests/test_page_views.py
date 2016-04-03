@@ -49,11 +49,11 @@ UpdatePageView:
 """
 
 from django.test import Client
-from .base import CorvidTestCase
+from .base import FuglTestCase
 from main.models import Page, User, Project
 
 
-class CreatePageViewTestCase(CorvidTestCase):
+class CreatePageViewTestCase(FuglTestCase):
 
     def setUp(self):
         super().setUpTheme()
@@ -151,7 +151,7 @@ class CreatePageViewTestCase(CorvidTestCase):
         self.assertEqual(resp.status_code, 404)
 
 
-class DeletePageViewTestCase(CorvidTestCase):
+class DeletePageViewTestCase(FuglTestCase):
 
     def setUp(self):
         super().setUpTheme()
@@ -274,7 +274,7 @@ class DeletePageViewTestCase(CorvidTestCase):
         self.assertEqual(resp.status_code, 404)
 
 
-class UpdatePageViewTestCase(CorvidTestCase):
+class UpdatePageViewTestCase(FuglTestCase):
 
     def setUp(self):
         super().setUpTheme()

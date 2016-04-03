@@ -4,7 +4,7 @@ Tests for the few model functions we have.
 
 from django.utils import timezone
 from main.models import Page, Post, Project, Category
-from .base import CorvidTestCase
+from .base import FuglTestCase
 
 
 def parse_markdown(md):
@@ -17,7 +17,7 @@ def parse_markdown(md):
     return frontmatter, suffix[:-1]
 
 
-class PageTestCase(CorvidTestCase):
+class PageTestCase(FuglTestCase):
 
     def setUp(self):
         self.setUpTheme()
@@ -48,7 +48,7 @@ class PageTestCase(CorvidTestCase):
         self.assertEqual(content, self.page.content)
 
 
-class PostTestCase(CorvidTestCase):
+class PostTestCase(FuglTestCase):
 
     def setUp(self):
         self.setUpTheme()
@@ -89,7 +89,7 @@ class PostTestCase(CorvidTestCase):
         self.assertEqual(content, self.post.content)
 
 
-class ProjectTestCase(CorvidTestCase):
+class ProjectTestCase(FuglTestCase):
 
     def setUp(self):
         self.setUpTheme()

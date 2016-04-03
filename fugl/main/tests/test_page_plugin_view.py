@@ -46,11 +46,11 @@ DeletePluginViewTestCase:
 """
 
 from django.test import Client
-from .base import CorvidTestCase
+from .base import FuglTestCase
 from main.models import User, Project, PagePlugin
 
 
-class CreatePagePluginViewTestCase(CorvidTestCase):
+class CreatePagePluginViewTestCase(FuglTestCase):
 
     def setUp(self):
         super().setUpTheme()
@@ -186,7 +186,7 @@ class CreatePagePluginViewTestCase(CorvidTestCase):
         self.assertEqual(response.status_code, 404)
 
 
-class DeletePagePluginViewTestCase(CorvidTestCase):
+class DeletePagePluginViewTestCase(FuglTestCase):
     def setUp(self):
         super().setUpTheme()
         self.client = Client()
@@ -316,7 +316,7 @@ class DeletePagePluginViewTestCase(CorvidTestCase):
         self.assertEqual(response.status_code, 404)
 
 
-class UpdatePagePluginViewTestCase(CorvidTestCase):
+class UpdatePagePluginViewTestCase(FuglTestCase):
     def setUp(self):
         super().setUpTheme()
         self.client = Client()

@@ -41,11 +41,11 @@ DeleteProjectTestCase:
 """
 
 from django.test import Client
-from .base import CorvidTestCase
+from .base import FuglTestCase
 from main.models import Project, User
 
 
-class CreateProjectViewTestCase(CorvidTestCase):
+class CreateProjectViewTestCase(FuglTestCase):
 
     def setUp(self):
         super().setUpTheme()
@@ -139,7 +139,7 @@ class CreateProjectViewTestCase(CorvidTestCase):
         self.assertEqual(old_number_of_projects, new_number_of_projects)
 
 
-class CloneProjectTestCase(CorvidTestCase):
+class CloneProjectTestCase(FuglTestCase):
 
     def setUp(self):
         super().setUpTheme()
@@ -300,7 +300,7 @@ class CloneProjectTestCase(CorvidTestCase):
         self.assertEqual(response.status_code, 404)
 
 
-class DeleteProjectTestCase(CorvidTestCase):
+class DeleteProjectTestCase(FuglTestCase):
 
     def setUp(self):
         super().setUpTheme()
