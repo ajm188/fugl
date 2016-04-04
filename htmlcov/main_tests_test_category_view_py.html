@@ -550,11 +550,11 @@
 <p id="t47" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t48" class="stm run hide_run"><span class="key">from</span> <span class="nam">django</span><span class="op">.</span><span class="nam">test</span> <span class="key">import</span> <span class="nam">Client</span><span class="strut">&nbsp;</span></p>
 <p id="t49" class="stm run hide_run"><span class="key">from</span> <span class="nam">django</span><span class="op">.</span><span class="nam">db</span> <span class="key">import</span> <span class="nam">transaction</span><span class="strut">&nbsp;</span></p>
-<p id="t50" class="stm run hide_run"><span class="key">from</span> <span class="op">.</span><span class="nam">base</span> <span class="key">import</span> <span class="nam">CorvidTestCase</span><span class="strut">&nbsp;</span></p>
+<p id="t50" class="stm run hide_run"><span class="key">from</span> <span class="op">.</span><span class="nam">base</span> <span class="key">import</span> <span class="nam">FuglTestCase</span><span class="strut">&nbsp;</span></p>
 <p id="t51" class="stm run hide_run"><span class="key">from</span> <span class="nam">main</span><span class="op">.</span><span class="nam">models</span> <span class="key">import</span> <span class="nam">User</span><span class="op">,</span> <span class="nam">Project</span><span class="op">,</span> <span class="nam">Category</span><span class="strut">&nbsp;</span></p>
 <p id="t52" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t53" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t54" class="stm run hide_run"><span class="key">class</span> <span class="nam">CreateCategoryViewTestCase</span><span class="op">(</span><span class="nam">CorvidTestCase</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t54" class="stm run hide_run"><span class="key">class</span> <span class="nam">CreateCategoryViewTestCase</span><span class="op">(</span><span class="nam">FuglTestCase</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t55" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t56" class="stm run hide_run">&nbsp; &nbsp; <span class="key">def</span> <span class="nam">setUp</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t57" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">super</span><span class="op">(</span><span class="op">)</span><span class="op">.</span><span class="nam">setUpTheme</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
@@ -673,7 +673,7 @@
 <p id="t170" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">self</span><span class="op">.</span><span class="nam">assertEqual</span><span class="op">(</span><span class="nam">response</span><span class="op">.</span><span class="nam">status_code</span><span class="op">,</span> <span class="num">404</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t171" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t172" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t173" class="stm run hide_run"><span class="key">class</span> <span class="nam">DeleteCategoryViewTestCase</span><span class="op">(</span><span class="nam">CorvidTestCase</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t173" class="stm run hide_run"><span class="key">class</span> <span class="nam">DeleteCategoryViewTestCase</span><span class="op">(</span><span class="nam">FuglTestCase</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t174" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t175" class="stm run hide_run">&nbsp; &nbsp; <span class="key">def</span> <span class="nam">setUp</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t176" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">super</span><span class="op">(</span><span class="op">)</span><span class="op">.</span><span class="nam">setUpTheme</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
@@ -802,7 +802,7 @@
 <p id="t299" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">self</span><span class="op">.</span><span class="nam">assertEqual</span><span class="op">(</span><span class="nam">response</span><span class="op">.</span><span class="nam">status_code</span><span class="op">,</span> <span class="num">404</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t300" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t301" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t302" class="stm run hide_run"><span class="key">class</span> <span class="nam">UpdateCategoryViewTestCase</span><span class="op">(</span><span class="nam">CorvidTestCase</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t302" class="stm run hide_run"><span class="key">class</span> <span class="nam">UpdateCategoryViewTestCase</span><span class="op">(</span><span class="nam">FuglTestCase</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t303" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t304" class="stm run hide_run">&nbsp; &nbsp; <span class="key">def</span> <span class="nam">setUp</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t305" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">super</span><span class="op">(</span><span class="op">)</span><span class="op">.</span><span class="nam">setUpTheme</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
@@ -942,7 +942,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.org">coverage.py v4.0.3</a>,
-            created at 2015-12-04 18:07
+            created at 2016-04-04 00:06
         </p>
     </div>
 </div>

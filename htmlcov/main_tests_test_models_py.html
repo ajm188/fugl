@@ -191,7 +191,7 @@
 <p id="t4" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t5" class="stm run hide_run"><span class="key">from</span> <span class="nam">django</span><span class="op">.</span><span class="nam">utils</span> <span class="key">import</span> <span class="nam">timezone</span><span class="strut">&nbsp;</span></p>
 <p id="t6" class="stm run hide_run"><span class="key">from</span> <span class="nam">main</span><span class="op">.</span><span class="nam">models</span> <span class="key">import</span> <span class="nam">Page</span><span class="op">,</span> <span class="nam">Post</span><span class="op">,</span> <span class="nam">Project</span><span class="op">,</span> <span class="nam">Category</span><span class="strut">&nbsp;</span></p>
-<p id="t7" class="stm run hide_run"><span class="key">from</span> <span class="op">.</span><span class="nam">base</span> <span class="key">import</span> <span class="nam">CorvidTestCase</span><span class="strut">&nbsp;</span></p>
+<p id="t7" class="stm run hide_run"><span class="key">from</span> <span class="op">.</span><span class="nam">base</span> <span class="key">import</span> <span class="nam">FuglTestCase</span><span class="strut">&nbsp;</span></p>
 <p id="t8" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t9" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t10" class="stm run hide_run"><span class="key">def</span> <span class="nam">parse_markdown</span><span class="op">(</span><span class="nam">md</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
@@ -204,7 +204,7 @@
 <p id="t17" class="stm run hide_run">&nbsp; &nbsp; <span class="key">return</span> <span class="nam">frontmatter</span><span class="op">,</span> <span class="nam">suffix</span><span class="op">[</span><span class="op">:</span><span class="op">-</span><span class="num">1</span><span class="op">]</span><span class="strut">&nbsp;</span></p>
 <p id="t18" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t19" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t20" class="stm run hide_run"><span class="key">class</span> <span class="nam">PageTestCase</span><span class="op">(</span><span class="nam">CorvidTestCase</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t20" class="stm run hide_run"><span class="key">class</span> <span class="nam">PageTestCase</span><span class="op">(</span><span class="nam">FuglTestCase</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t21" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t22" class="stm run hide_run">&nbsp; &nbsp; <span class="key">def</span> <span class="nam">setUp</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t23" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">self</span><span class="op">.</span><span class="nam">setUpTheme</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
@@ -235,7 +235,7 @@
 <p id="t48" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">self</span><span class="op">.</span><span class="nam">assertEqual</span><span class="op">(</span><span class="nam">content</span><span class="op">,</span> <span class="nam">self</span><span class="op">.</span><span class="nam">page</span><span class="op">.</span><span class="nam">content</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t49" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t50" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t51" class="stm run hide_run"><span class="key">class</span> <span class="nam">PostTestCase</span><span class="op">(</span><span class="nam">CorvidTestCase</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t51" class="stm run hide_run"><span class="key">class</span> <span class="nam">PostTestCase</span><span class="op">(</span><span class="nam">FuglTestCase</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t52" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t53" class="stm run hide_run">&nbsp; &nbsp; <span class="key">def</span> <span class="nam">setUp</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t54" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">self</span><span class="op">.</span><span class="nam">setUpTheme</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
@@ -276,7 +276,7 @@
 <p id="t89" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">self</span><span class="op">.</span><span class="nam">assertEqual</span><span class="op">(</span><span class="nam">content</span><span class="op">,</span> <span class="nam">self</span><span class="op">.</span><span class="nam">post</span><span class="op">.</span><span class="nam">content</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t90" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t91" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t92" class="stm run hide_run"><span class="key">class</span> <span class="nam">ProjectTestCase</span><span class="op">(</span><span class="nam">CorvidTestCase</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t92" class="stm run hide_run"><span class="key">class</span> <span class="nam">ProjectTestCase</span><span class="op">(</span><span class="nam">FuglTestCase</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t93" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t94" class="stm run hide_run">&nbsp; &nbsp; <span class="key">def</span> <span class="nam">setUp</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t95" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">self</span><span class="op">.</span><span class="nam">setUpTheme</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
@@ -310,7 +310,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.org">coverage.py v4.0.3</a>,
-            created at 2015-12-04 18:07
+            created at 2016-04-04 00:06
         </p>
     </div>
 </div>

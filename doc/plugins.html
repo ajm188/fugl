@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Plugins &mdash; Corvid 1.0 documentation</title>
+  <title>Plugins &mdash; Fugl 1.0 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="Corvid 1.0 documentation" href="index.html"/>
+    <link rel="top" title="Fugl 1.0 documentation" href="index.html"/>
         <link rel="prev" title="All About Projects" href="projects.html"/> 
 
   
@@ -49,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Corvid
+            <a href="index.html" class="icon icon-home"> Fugl
           
 
           
@@ -81,10 +81,10 @@
             
             
                 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="whatis.html">What is Corvid?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatis.html">What is Fugl?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gettingstarted.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="projects.html">All About Projects</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Plugins</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Plugins</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#project-plugins">Project Plugins</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#page-plugins">Page Plugins</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#disqus-comments">Disqus Comments</a></li>
@@ -104,7 +104,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">Corvid</a>
+        <a href="index.html">Fugl</a>
       </nav>
 
 
@@ -113,7 +113,7 @@
         <div class="rst-content">
           
 
-
+ 
 
 
 
@@ -138,41 +138,41 @@
   <div class="section" id="plugins">
 <h1>Plugins<a class="headerlink" href="#plugins" title="Permalink to this headline">¶</a></h1>
 <p>As you&#8217;ve probably read by now, plugins are bits of code that get mixed into
-your site to alter its behavior.  If you don&#8217;t know much about code or HTML,
-that&#8217;s fine &#8211; you don&#8217;t need to!  This article will describe a few different
+your site to alter its behavior. If you don&#8217;t know much about code or HTML,
+that&#8217;s fine &#8211; you don&#8217;t need to! This article will describe a few different
 types of plugins which you can easily add to your project.</p>
 <div class="section" id="project-plugins">
 <h2>Project Plugins<a class="headerlink" href="#project-plugins" title="Permalink to this headline">¶</a></h2>
 <p>Project plugins are plugins that are applied to every single page in your site.
 They don&#8217;t usually show up visibly on your site content, but rather they can
-make your site do interesting things.  Here&#8217;s an example of some code that you
+make your site do interesting things. Here&#8217;s an example of some code that you
 could put into a project plugin:</p>
-<div class="code html highlight-python"><div class="highlight"><pre>&lt;script&gt;
-  alert(&quot;I&#39;m an annoying popup!&quot;);
-&lt;/script&gt;
+<div class="code html highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">script</span><span class="o">&gt;</span>
+  <span class="n">alert</span><span class="p">(</span><span class="s2">&quot;I&#39;m an annoying popup!&quot;</span><span class="p">);</span>
+<span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <p>If you&#8217;re not familiar with HTML or Javascript, this code will make a little
-message box pop up proclaiming &#8220;I&#8217;m an annoying popup!&#8221;.  Since project plugins
+message box pop up proclaiming &#8220;I&#8217;m an annoying popup!&#8221;. Since project plugins
 are added to every single page in your site, this plugin would interrupt your
-site&#8217;s user every time they go to a new page with a new popup.  Clearly, this
+site&#8217;s user every time they go to a new page with a new popup. Clearly, this
 isn&#8217;t a useful plugin, but hopefully it gets the idea across.</p>
-<p>So what sort of useful plugins can you add to your site?  Well, perhaps the most
+<p>So what sort of useful plugins can you add to your site? Well, perhaps the most
 useful site-wide plugin you could add to a site is something called Google
-Analytics.  This product from Google will collect useful information about your
-site&#8217;s visitors and their behavior.  This is very useful for understanding the
+Analytics. This product from Google will collect useful information about your
+site&#8217;s visitors and their behavior. This is very useful for understanding the
 type of people that use your site, so that you can better cater to your
-visitors.  In order to get Google Analytics up and running, you&#8217;ll have to do
+visitors. In order to get Google Analytics up and running, you&#8217;ll have to do
 two things:</p>
 <ol class="arabic simple">
 <li>Set up a Google Analytics account and create a &#8220;property&#8221; for your website.
 See Google&#8217;s <a class="reference external" href="https://support.google.com/analytics/answer/1008015?hl=en">help</a> document about
 this process for more information.</li>
-<li>From your Corvid project&#8217;s home, click the &#8220;Project Plugins&#8221; dropdown, and
+<li>From your Fugl project&#8217;s home, click the &#8220;Project Plugins&#8221; dropdown, and
 select &#8220;New Project Plugin&#8221;.</li>
-<li>In the &#8220;Title&#8221; field <a class="footnote-reference" href="#projplugtitle" id="id1">[1]</a>, enter &#8220;Google Analytics&#8221;</li>
-<li>Get your web tracking code for your site on Google Analytics.  Instructions
-for doing this are on <a class="reference external" href="https://support.google.com/analytics/answer/1008080">this help document</a> by Google.  You want
+<li>In the &#8220;Title&#8221; field <a class="footnote-reference" href="#projplugtitle" id="id1">[1]</a>, enter &#8220;Google Analytics&#8221;.</li>
+<li>Get your web tracking code for your site on Google Analytics. Instructions
+for doing this are on <a class="reference external" href="https://support.google.com/analytics/answer/1008080">this help document</a> by Google. You want
 to follow the instructions under &#8220;Add the tracking code directly to your
 site.&#8221;  Copy and paste your tracking code into the &#8220;Markup&#8221; field.</li>
 <li>Click Submit.</li>
@@ -182,7 +182,7 @@ watch live analytics information for your website on Google Analytics!</p>
 <table class="docutils footnote" frame="void" id="projplugtitle" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>A project plugin may have any title you&#8217;d like!  It&#8217;s just
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>A project plugin may have any title you&#8217;d like! It&#8217;s just
 for you to remember what it is &#8211; it won&#8217;t show up on your
 site.</td></tr>
 </tbody>
@@ -190,50 +190,51 @@ site.</td></tr>
 </div>
 <div class="section" id="page-plugins">
 <h2>Page Plugins<a class="headerlink" href="#page-plugins" title="Permalink to this headline">¶</a></h2>
-<p>Page Plugins are a bit different from Project Plugins.  Unlike project plugins,
-these only go on specific Pages.  Once you&#8217;ve created a Page Plugin, you can
-edit your pages and add the plugin to whatever pages you&#8217;d like.  The other
-major difference is that Page Plugins typically add content to your page, rather
-than just make your site do cool things.  Typically they have two parts: head
-markup and body markup, with head markup guaranteed to go before body markup.
-First, here are some instructions on how to add Page Plugins to your site:</p>
+<p>Page Plugins are a bit different from Project Plugins. Unlike project plugins,
+these only go on specific Pages. Once you&#8217;ve created a Page Plugin, you can
+edit your pages and add the plugin to whatever pages you&#8217;d like. The other
+major difference is that Page Plugins typically add content to your page,
+rather than just make your site do cool things. Typically they have two parts:
+head markup and body markup, with head markup guaranteed to go before body
+markup. First, here are some instructions on how to add Page Plugins to your
+site:</p>
 <ol class="arabic simple">
-<li>From the Project Homepage, click the &#8220;Page Plugins&#8221; dropdown.  Click &#8220;New
+<li>From the Project Homepage, click the &#8220;Page Plugins&#8221; dropdown. Click &#8220;New
 Page Plugin&#8221;.</li>
-<li>Enter a title (this will depend on what your plugin is for).  Your title can
-be anything; it&#8217;s just for your organization.  The title won&#8217;t show up on
+<li>Enter a title (this will depend on what your plugin is for). Your title can
+be anything; it&#8217;s just for your organization. The title won&#8217;t show up on
 your site.</li>
 <li>Paste the head and body markup in (you will see some examples shortly).</li>
 <li>Click Submit.</li>
 </ol>
 <p>To add a Page Plugin to a Page:</p>
 <ol class="arabic simple">
-<li>Click the Page title in the Project Home.  This will take you to the Edit
+<li>Click the Page title in the Project Home. This will take you to the Edit
 Page screen.</li>
 <li>You should now see the title of your Page Plugin under the &#8220;Plugins&#8221; heading.
-You can select it for this page.  If you&#8217;d like to select multiple plugins,
+You can select it for this page. If you&#8217;d like to select multiple plugins,
 hold the control button while you click.</li>
 <li>Click Submit.</li>
 </ol>
 <p>Now, when you download your site again, you will have the plugin on this page.
 You may have to repeat this process for each page you&#8217;d like this plugin to
-appear on.  There is currently no way to automatically add a plugin to many
+appear on. There is currently no way to automatically add a plugin to many
 pages, although this feature could be added in the future.</p>
 </div>
 <div class="section" id="disqus-comments">
 <h2>Disqus Comments<a class="headerlink" href="#disqus-comments" title="Permalink to this headline">¶</a></h2>
 <p>So now that you know all about creating page plugins and adding them to pages,
-what can you do with a page plugin?  Well, one of the best things to do is add
-Disqus!  Disqus is a system that puts a comment section on a page, without any
-extra complexity to you.  To use Disqus, you&#8217;ll need to create an account
-(<a class="reference external" href="https://disqus.com/">start here</a> for that).  Once you have an account, you
+what can you do with a page plugin? Well, one of the best things to do is add
+Disqus! Disqus is a system that puts a comment section on a page, without any
+extra complexity to you. To use Disqus, you&#8217;ll need to create an account
+(<a class="reference external" href="https://disqus.com/">start here</a> for that). Once you have an account, you
 can <a class="reference external" href="https://disqus.com/admin/create/">create</a> your own site profile.</p>
 <p>Next, get your &#8220;universal code&#8221; by going to this URL:</p>
-<div class="code highlight-python"><div class="highlight"><pre>https://[shortname].disqus.com/admin/settings/universalcode/
+<div class="code highlight-default"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="p">[</span><span class="n">shortname</span><span class="p">]</span><span class="o">.</span><span class="n">disqus</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">admin</span><span class="o">/</span><span class="n">settings</span><span class="o">/</span><span class="n">universalcode</span><span class="o">/</span>
 </pre></div>
 </div>
 <p>Here, <code class="docutils literal"><span class="pre">shortname</span></code> is the Disqus shortname you should have created in the
-previous step.  Copy and paste the universal code into the &#8220;body markup&#8221; section
+previous step. Copy and paste the universal code into the &#8220;body markup&#8221; section
 of a page plugin.</p>
 <p>Now, when you add this plugin to a page, download the ZIP, and deploy, you&#8217;ll
 have comments built in to your website on that page!</p>
@@ -241,13 +242,13 @@ have comments built in to your website on that page!</p>
 <div class="section" id="social-media-buttons">
 <h2>Social Media Buttons<a class="headerlink" href="#social-media-buttons" title="Permalink to this headline">¶</a></h2>
 <p>When you&#8217;re trying to gain popularity on a website, one of the best things you
-can do is make it easy for your visitors to share content from your site.  For
-instance, if you&#8217;ve written a particularly good blog article, you should make it
-easy for readers to share it to Facebook, Twitter, and other social media
-platforms.  Social media buttons make this easy.</p>
-<p>There are many ways you can add social buttons, but the most straightforward way
-is to use a free tool to generate code you can put into a Corvid plugin.  One
-free example is called <a class="reference external" href="http://www.sharethis.com/">Share This</a>.</p>
+can do is make it easy for your visitors to share content from your site. For
+instance, if you&#8217;ve written a particularly good blog article, you should make
+it easy for readers to share it to Facebook, Twitter, and other social media
+platforms. Social media buttons make this easy.</p>
+<p>There are many ways you can add social buttons, but the most straightforward
+way is to use a free tool to generate code you can put into a Fugl plugin.
+One free example is called <a class="reference external" href="http://www.sharethis.com/">Share This</a>.</p>
 <ol class="arabic simple">
 <li>Create a Share This account (all that is required is an email and password).</li>
 <li>Go to the <a class="reference external" href="http://www.sharethis.com/">homepage</a> and click &#8220;Free Sharing
@@ -283,7 +284,7 @@ buttons enabled!</li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015, The Corvidae.
+        &copy; Copyright 2016, The Fuglae.
 
     </p>
   </div>

@@ -4,10 +4,10 @@ Getting Started
 Create your account
 -------------------
 
-In order to use Corvid, you need to have a user account.  All of your projects
+In order to use Fugl, you need to have a user account.  All of your projects
 will be associated with your user account, so make sure you use a good password!
 
-1. Go to https://corvid.xyz/register
+1. Go to https://fugl.xyz/register
 2. Enter a username [#un]_, email address, and password, and then click submit.
 3. You should be redirected to the login page.
 4. Enter your username and password, and you'll be presented with your account
@@ -20,16 +20,16 @@ Create your first project
 -------------------------
 
 The account homepage gives you the ability to manage all of your projects.  In
-Corvid, a project represents a website.  From the account home, you can create,
+Fugl, a project represents a website.  From the account home, you can create,
 duplicate, and delete projects.  We'll start by creating a simple example
-project to help you understand what Corvid lets you do.
+project to help you understand what Fugl lets you do.
 
 1. Click the "New Project" button.
 2. In the "Title" field [#title]_, enter a title.  For the purpose of this
    example, you can enter something like "My First Website".
 3. In the "Description" [#desc]_ field, enter a sentence that describes the
    purpose of your website.  For this example, you can use something like "I'm
-   learning to use Corvid!".
+   learning to use Fugl!".
 4. You should be redirected to your project homepage.
 
 .. [#title] A valid title may contain: letters, digits, hyphens, and spaces.
@@ -54,10 +54,10 @@ is make an "About Us" page:
 
    .. code::
 
-      # What is Corvid?
+      # What is Fugl?
    
-      Corvid is an application for making simple static websites.  Your pages
-      are written in Markdown, so you can create [links](https://corvid.xyz),
+      Fugl is an application for making simple static websites.  Your pages
+      are written in Markdown, so you can create [links](https://fugl.xyz),
 
       - bulleted
       - lists,
@@ -108,8 +108,8 @@ up" your site with a different theme.  To do this:
 3. Click Submit.  You are returned to your project homepage.
 
 Now, your project's theme will be different.  If you'd like to see previews for
-some of the themes available within Corvid, please check `this
-<http://www.pelicanthemes.com/>`_ website.  Right now, Corvid only supports a
+some of the themes available within Fugl, please check `this
+<http://www.pelicanthemes.com/>`_ website.  Right now, Fugl only supports a
 few of the themes shown on this site, but this can be easily expanded!
 
 Download your site!

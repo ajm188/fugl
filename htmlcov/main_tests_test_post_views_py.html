@@ -543,11 +543,11 @@
 <p id="t50" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t51" class="stm run hide_run"><span class="key">from</span> <span class="nam">django</span><span class="op">.</span><span class="nam">test</span> <span class="key">import</span> <span class="nam">Client</span><span class="strut">&nbsp;</span></p>
 <p id="t52" class="stm run hide_run"><span class="key">from</span> <span class="nam">django</span><span class="op">.</span><span class="nam">utils</span> <span class="key">import</span> <span class="nam">timezone</span><span class="strut">&nbsp;</span></p>
-<p id="t53" class="stm run hide_run"><span class="key">from</span> <span class="op">.</span><span class="nam">base</span> <span class="key">import</span> <span class="nam">CorvidTestCase</span><span class="strut">&nbsp;</span></p>
+<p id="t53" class="stm run hide_run"><span class="key">from</span> <span class="op">.</span><span class="nam">base</span> <span class="key">import</span> <span class="nam">FuglTestCase</span><span class="strut">&nbsp;</span></p>
 <p id="t54" class="stm run hide_run"><span class="key">from</span> <span class="nam">main</span><span class="op">.</span><span class="nam">models</span> <span class="key">import</span> <span class="nam">Post</span><span class="op">,</span> <span class="nam">User</span><span class="op">,</span> <span class="nam">Project</span><span class="op">,</span> <span class="nam">Category</span><span class="strut">&nbsp;</span></p>
 <p id="t55" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t56" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t57" class="stm run hide_run"><span class="key">class</span> <span class="nam">CreatePostViewTestCase</span><span class="op">(</span><span class="nam">CorvidTestCase</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t57" class="stm run hide_run"><span class="key">class</span> <span class="nam">CreatePostViewTestCase</span><span class="op">(</span><span class="nam">FuglTestCase</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t58" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t59" class="stm run hide_run">&nbsp; &nbsp; <span class="key">def</span> <span class="nam">setUp</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t60" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">super</span><span class="op">(</span><span class="op">)</span><span class="op">.</span><span class="nam">setUpTheme</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
@@ -653,7 +653,7 @@
 <p id="t160" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">self</span><span class="op">.</span><span class="nam">assertEqual</span><span class="op">(</span><span class="nam">resp</span><span class="op">.</span><span class="nam">status_code</span><span class="op">,</span> <span class="num">404</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t161" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t162" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t163" class="stm run hide_run"><span class="key">class</span> <span class="nam">DeletePostViewTestCase</span><span class="op">(</span><span class="nam">CorvidTestCase</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t163" class="stm run hide_run"><span class="key">class</span> <span class="nam">DeletePostViewTestCase</span><span class="op">(</span><span class="nam">FuglTestCase</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t164" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t165" class="stm run hide_run">&nbsp; &nbsp; <span class="key">def</span> <span class="nam">setUp</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t166" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">super</span><span class="op">(</span><span class="op">)</span><span class="op">.</span><span class="nam">setUpTheme</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
@@ -781,7 +781,7 @@
 <p id="t288" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">self</span><span class="op">.</span><span class="nam">assertEqual</span><span class="op">(</span><span class="nam">resp</span><span class="op">.</span><span class="nam">status_code</span><span class="op">,</span> <span class="num">404</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t289" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t290" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t291" class="stm run hide_run"><span class="key">class</span> <span class="nam">UpdatePostViewTestCase</span><span class="op">(</span><span class="nam">CorvidTestCase</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t291" class="stm run hide_run"><span class="key">class</span> <span class="nam">UpdatePostViewTestCase</span><span class="op">(</span><span class="nam">FuglTestCase</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t292" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t293" class="stm run hide_run">&nbsp; &nbsp; <span class="key">def</span> <span class="nam">setUp</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t294" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">super</span><span class="op">(</span><span class="op">)</span><span class="op">.</span><span class="nam">setUpTheme</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
@@ -922,7 +922,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.org">coverage.py v4.0.3</a>,
-            created at 2015-12-04 18:07
+            created at 2016-04-04 00:06
         </p>
     </div>
 </div>
