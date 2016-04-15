@@ -6,3 +6,4 @@ pelican
 markdown
 tswift
 django-pagedown
+djangorestframework >=3.3,<3.4
