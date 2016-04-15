@@ -3,6 +3,7 @@ from .page import Page
 from .page_plugin import PagePlugin
 from .post import Post
 from .project import Project
+from .project_access import ProjectAccess
 from .project_plugin import ProjectPlugin
 from .tag import Tag
 from .theme import Theme

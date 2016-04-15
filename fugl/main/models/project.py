@@ -15,6 +15,7 @@ def validate_project(value):
     if not reg.match(value):
         raise ValidationError('Not letters, digits, and -/_.', code='invalid')
 
+
 class Project(models.Model):
     """
     Represents a project: a static website
@@ -31,6 +32,9 @@ class Project(models.Model):
 
     owner = models.ForeignKey(User)
     theme = models.ForeignKey('Theme')
+
+    users = models.ManyToManyField(User, through='ProjectAccess',
+        related_name='shared_projects')
 
     @property
     def project_home_url(self):
