@@ -27,5 +27,27 @@ Account Home &#8226; Fugl
             </li>
         </ul>
     </div>
+    <div class='panel panel-default'>
+        <div class='panel-heading'>
+            <h2 class='panel-title'>Projects Shared with Me</h2>
+        </div>
+        <ul class='list-group'>
+            {% for access in project_access_list %}
+            {% with project=access.project %}
+            <li class='list-group-item'>
+                <a class='actions' href="{% url 'project_home' owner=project.owner.username title=project.title %}">
+                    <span class='pp-title'>{{ project.title }}</span></a>
+                <span class='badge'>
+                {% if access.can_edit %}
+                Edit
+                {% else %}
+                View
+                {% endif %}
+                </span>
+            </li>
+            {% endwith %}
+            {% endfor %}
+        </ul>
+    </div>
 </div>
 {% endblock %}
