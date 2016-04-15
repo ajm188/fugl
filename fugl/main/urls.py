@@ -1,4 +1,10 @@
 from django.conf.urls import url
+from django.contrib.auth.views import login as login_view
+from django.contrib.auth.views import logout_then_login as logout_view
+
+from rest_framework import routers
+
+from .api import UserViewSet
 from .views import (root_controller, UserHomeView, RegistrationView,
                     CreateProjectView, DeleteProjectView,
                     CreatePageView, UpdatePageView, DeletePageView,
@@ -9,8 +15,6 @@ from .views import (root_controller, UserHomeView, RegistrationView,
                     CreatePagePluginView, UpdatePagePluginView, DeletePagePluginView,
                     ProjectSettingsView, CloneProjectView)
 from .views.unauthenticated import login_unrequired
-from django.contrib.auth.views import login as login_view
-from django.contrib.auth.views import logout_then_login as logout_view
 
 
 urlpatterns = [
@@ -77,3 +81,8 @@ urlpatterns = [
     url(r'^project/(?P<owner>[^/]+)/(?P<proj_title>[^/]+)/generate',
         SiteGenerationView.as_view(), name='site_generation'),
 ]
+
+
+router = routers.SimpleRouter()
+router.register(r'users', UserViewSet)
+urlpatterns += router.urls
