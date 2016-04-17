@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.decorators import list_route
 from rest_framework.response import Response
 
 from main.models import User
@@ -31,3 +32,17 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+    @list_route()
+    def available(self, request):
+        """
+        Check if a username is available.
+        GET /users/available?username=<name>
+        """
+        username = request.query_params['username']
+        resp_data = {}
+        if User.objects.filter(username=username).exists():
+            resp_data['available'] = False
+        else:
+            resp_data['available'] = True
+        return Response(resp_data, status=status.HTTP_200_OK)

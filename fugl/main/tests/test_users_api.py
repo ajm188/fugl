@@ -12,6 +12,7 @@ from .base import FuglTestCase
 class UserViewSetTestCase(FuglTestCase):
 
     user_path = '/users/'
+    available_path = user_path + 'available/'
 
     def setUp(self):
         super().setUpTheme()
@@ -78,3 +79,22 @@ class UserViewSetTestCase(FuglTestCase):
         self.assertIn(b'Ensure this field has no more than', response.content)
         users = User.objects.filter(username='test_user')
         self.assertEqual(len(users), 0)
+
+    def test_username_check_success(self):
+        data = {'username': 'test_user'}
+        resp = self.client.get(self.available_path, data)
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn(b'true', resp.content)
+
+    def test_username_check_taken(self):
+        user = User.objects.create(username='test_user', password='test_pass',)
+        user.save()
+
+        data = {'username': 'test_user'}
+        resp = self.client.get(self.available_path, data)
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn(b'false', resp.content)
+
+        user.delete()
