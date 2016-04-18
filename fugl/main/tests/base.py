@@ -2,8 +2,11 @@
 Base class for Fugl tests that set up some database stuff.
 """
 
+from django.test import Client
 from django.test import TestCase
-from main.models import User, Theme
+
+from main.models import Theme
+from main.models import User
 
 
 class FuglTestCase(TestCase):
@@ -24,6 +27,18 @@ class FuglTestCase(TestCase):
         self.default_theme.save()
         self.admin_user.delete()
 
-    def login(self):
-        self.client.login(username=self.admin_user.username,
-                          password=self.admin_password)
+    def login(self, user=None, password=None):
+        user = user or self.admin_user
+        password = password or self.admin_password
+        return self.client.login(username=user.username,
+                                 password=password)
+
+
+class FuglViewTestCase(FuglTestCase):
+
+    def setUp(self):
+        super().setUpTheme()
+        self.client = Client()
+
+    def tearDown(self):
+        super().tearDownTheme()
