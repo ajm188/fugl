@@ -3,8 +3,13 @@ Tests for the few model functions we have.
 """
 
 from django.utils import timezone
-from main.models import Page, Post, Project, Category
-from .base import FuglTestCase
+
+from main.models import Category
+from main.models import Page
+from main.models import Post
+from main.models import Project
+
+from ..base import FuglTestCase
 
 
 def parse_markdown(md):
