@@ -3,7 +3,7 @@ from main.models import ProjectAccess
 from main.models import User
 from main.util import UserAccess
 
-from .base import FuglTestCase
+from ..base import FuglTestCase
 
 
 class UserAccessTestCase(FuglTestCase):
