@@ -25,6 +25,8 @@ class ProjectViewSetTestCase(FuglViewTestCase):
             description='', theme=self.default_theme, owner=self.other_user)
         self.view_project = Project.objects.create(title='view',
             description='', theme=self.default_theme, owner=self.other_user)
+        self.other_project = Project.objects.create(title='other',
+            description='', theme=self.default_theme, owner=self.other_user)
 
         ProjectAccess.objects.create(user=self.user, project=self.edit_project,
             can_edit=True).save()
@@ -43,6 +45,7 @@ class ProjectViewSetTestCase(FuglViewTestCase):
     url = _url.format('/')
     owned_url = _url.format('/owned/')
     shared_url = _url.format('/shared/')
+    show_url = _url.format('/{}/')
 
     def test_owned_projects(self):
         resp = self.client.get(self.owned_url)
@@ -90,3 +93,19 @@ class ProjectViewSetTestCase(FuglViewTestCase):
                 self.assertEqual(project['can_edit'], False)
             else:
                 self.assertEqual(project['can_edit'], True)
+
+    def test_project_detail_for_owned(self):
+        resp = self.client.get(self.show_url.format(self.owned_project.id))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_project_detail_for_viewable(self):
+        resp = self.client.get(self.show_url.format(self.view_project.id))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_project_detail_for_unviewable(self):
+        resp = self.client.get(self.show_url.format(self.other_project.id))
+        self.assertEqual(resp.status_code, 404)
+
+    def test_project_detail_for_nonexistent(self):
+        resp = self.client.get(self.show_url.format(-1))
+        self.assertEqual(resp.status_code, 404)
