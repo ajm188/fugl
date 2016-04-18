@@ -6,7 +6,7 @@ from django.test import Client
 
 from main.models import User
 
-from .base import FuglTestCase
+from ..base import FuglTestCase
 
 
 class UserViewSetTestCase(FuglTestCase):
