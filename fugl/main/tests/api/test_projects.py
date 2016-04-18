@@ -1,3 +1,5 @@
+import json
+
 from django.test import Client
 
 from main.models import Project
@@ -45,7 +47,7 @@ class ProjectViewSetTestCase(FuglViewTestCase):
     url = _url.format('/')
     owned_url = _url.format('/owned/')
     shared_url = _url.format('/shared/')
-    show_url = _url.format('/{}/')
+    detail_url = _url.format('/{}/')
 
     def test_owned_projects(self):
         resp = self.client.get(self.owned_url)
@@ -95,17 +97,60 @@ class ProjectViewSetTestCase(FuglViewTestCase):
                 self.assertEqual(project['can_edit'], True)
 
     def test_project_detail_for_owned(self):
-        resp = self.client.get(self.show_url.format(self.owned_project.id))
+        resp = self.client.get(self.detail_url.format(self.owned_project.id))
         self.assertEqual(resp.status_code, 200)
 
     def test_project_detail_for_viewable(self):
-        resp = self.client.get(self.show_url.format(self.view_project.id))
+        resp = self.client.get(self.detail_url.format(self.view_project.id))
         self.assertEqual(resp.status_code, 200)
 
     def test_project_detail_for_unviewable(self):
-        resp = self.client.get(self.show_url.format(self.other_project.id))
+        resp = self.client.get(self.detail_url.format(self.other_project.id))
         self.assertEqual(resp.status_code, 404)
 
     def test_project_detail_for_nonexistent(self):
-        resp = self.client.get(self.show_url.format(-1))
+        resp = self.client.get(self.detail_url.format(-1))
+        self.assertEqual(resp.status_code, 404)
+
+    def test_project_update_for_owned(self):
+        old_title = self.owned_project.title
+
+        resp = self.client.put(self.detail_url.format(self.owned_project.id),
+                data=json.dumps({'title': 'new-title'}),
+                content_type='application/json')
+        self.assertEqual(resp.status_code, 200)
+
+        self.owned_project.refresh_from_db()
+        self.assertEqual(self.owned_project.title, 'new-title')
+        self.assertNotEqual(self.owned_project.title, old_title)
+        self.assertIn('title', resp.data)
+        self.assertEqual(resp.data['title'], 'new-title')
+
+    def test_project_update_bad_data(self):
+        data = {'title': ''}
+        resp = self.client.put(self.detail_url.format(self.owned_project.id),
+                               data=json.dumps(data),
+                               content_type='application/json')
+        self.assertEqual(resp.status_code, 400)
+
+        self.owned_project.refresh_from_db()
+        self.assertNotEqual(self.owned_project.title, '')
+        self.assertIn('title', resp.data)
+        title_error = resp.data['title']
+        self.assertNotEqual(len(title_error), 0)
+
+    def test_project_update_for_viewable(self):
+        resp = self.client.put(self.detail_url.format(self.view_project.id))
+        self.assertEqual(resp.status_code, 404)
+
+    def test_project_update_for_editable(self):
+        resp = self.client.put(self.detail_url.format(self.edit_project.id))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_project_update_for_unviewable(self):
+        resp = self.client.put(self.detail_url.format(self.other_project.id))
+        self.assertEqual(resp.status_code, 404)
+
+    def test_project_update_for_nonexistent(self):
+        resp = self.client.put(self.detail_url.format(-1))
         self.assertEqual(resp.status_code, 404)
