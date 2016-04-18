@@ -1,10 +1,5 @@
-"""
-Tests for the few model functions we have.
-"""
-
 from main.models import Project
 
-from .helpers import parse_markdown
 from ..base import FuglTestCase
 
 
