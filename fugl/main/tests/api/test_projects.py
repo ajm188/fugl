@@ -154,3 +154,31 @@ class ProjectViewSetTestCase(FuglViewTestCase):
     def test_project_update_for_nonexistent(self):
         resp = self.client.put(self.detail_url.format(-1))
         self.assertEqual(resp.status_code, 404)
+
+    def test_project_delete(self):
+        project = Project.objects.create(title='ix-nay', description='',
+            owner=self.user, theme=self.default_theme)
+        num_projects = len(Project.objects.all())
+
+        resp = self.client.delete(self.detail_url.format(project.id))
+        self.assertEqual(resp.status_code, 204)
+
+        self.assertEqual(len(Project.objects.all()), num_projects - 1)
+
+    def test_project_delete_unowned(self):
+        num_projects = len(Project.objects.all())
+
+        resp = self.client.delete(
+            self.detail_url.format(self.edit_project.id)
+        )
+        self.assertEqual(resp.status_code, 404)
+
+        self.assertEqual(len(Project.objects.all()), num_projects)
+
+    def test_project_delete_nonexistent(self):
+        num_projects = len(Project.objects.all())
+
+        resp = self.client.delete(self.detail_url.format(-1))
+        self.assertEqual(resp.status_code, 404)
+
+        self.assertEqual(len(Project.objects.all()), num_projects)
