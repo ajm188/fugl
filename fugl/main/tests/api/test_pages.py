@@ -1,3 +1,5 @@
+import json
+
 from ..base import FuglViewTestCase
 
 
@@ -144,9 +146,118 @@ class RetrievePageTestCase(FuglViewTestCase):
 
 class UpdatePageTestCase(FuglViewTestCase):
 
-    pass
+    _url = '/pages/{pk}/'
+
+    def setUp(self):
+        super().setUp()
+
+        self.project = self.create_project('admin-project',
+            owner=self.admin_user)
+        self.page = self.create_page('my-page', content='blah',
+            project=self.project)
+        self.other_user = self.create_user('other')
+        self.other_project = self.create_project('other-project',
+            owner=self.other_user)
+
+        self.login(user=self.admin_user)
+
+    def test_update_success(self):
+        url = self._url.format(pk=self.page.id)
+
+        data = {'title': 'new-title'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 200)
+
+        data = resp.data
+        self.assertEqual(data.get('title'), 'new-title')
+        self.page.refresh_from_db()
+        self.assertEqual(self.page.title, 'new-title')
+
+        # undo the update
+        self.page.title = 'my-page'
+        self.page.save()
+
+    def test_update_bad_data(self):
+        url = self._url.format(pk=self.page.id)
+
+        data = {'title': ''}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 400)
+
+        self.assertIn('title', resp.data)
+        self.assertEqual(self.page.title, 'my-page')
+
+    def test_update_nonexistent(self):
+        url = self._url.format(pk=-1)
+
+        data = {'title': 'new-title'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 404)
+
+    def test_update_with_edit_access(self):
+        page = self.create_page('a', content='b', project=self.other_project)
+        url = self._url.format(pk=page.id)
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=True)
+
+        data = {'content': 'blargh'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 200)
+
+        page.refresh_from_db()
+        self.assertEqual(page.content, 'blargh')
+        page.delete()
+
+        access.delete()
+
+    def test_update_with_view_access(self):
+        page = self.create_page('a', content='b', project=self.other_project)
+        url = self._url.format(pk=page.id)
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=False)
+
+        data = {'content': 'blargh'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 404)
+
+        page.refresh_from_db()
+        self.assertEqual(page.content, 'b')
+        page.delete()
+
+        access.delete()
+
+    def test_update_with_no_access(self):
+        page = self.create_page('a', content='b', project=self.other_project)
+        url = self._url.format(pk=page.id)
+
+        data = {'content': 'blargh'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 404)
+
+        page.refresh_from_db()
+        self.assertEqual(page.content, 'b')
+        page.delete()
 
 
 class DeletePageTestCase(FuglViewTestCase):
 
-    pass
+    def test_delete_success(self):
+        pass
+
+    def test_delete_nonexistent(self):
+        pass
+
+    def test_delete_with_edit_access(self):
+        pass
+
+    def test_delete_with_view_access(self):
+        pass
+
+    def test_delete_with_no_access(self):
+        pass

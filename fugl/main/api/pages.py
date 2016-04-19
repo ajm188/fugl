@@ -48,8 +48,16 @@ class PageViewSet(viewsets.GenericViewSet):
     def update(self, request, pk=None):
         page = get_object_or_404(self.queryset, pk=pk)
         access = UserAccess(request.user)
+        request.data.pop('project', None)  # not allowed to change project
         if access.can_edit(page.project):
-            pass
+            serializer = self.serializer_class(page, data=request.data,
+                partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors,
+                    status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
