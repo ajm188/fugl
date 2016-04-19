@@ -58,15 +58,42 @@ class CreatePageTestCase(FuglViewTestCase):
         resp = self.client.post(self.url, data=data)
         self.assertEqual(resp.status_code, 400)
 
-    def test_create_with_nonexistent_project(self):
+    def test_create_with_edit_access(self):
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=True)
+
         data = {
-            'project': -1,
+            'project': self.other_project.id,
+            'title': 'my-title',
+            'content': 'blah',
+        }
+        resp = self.client.post(self.url, data=data)
+        self.assertEqual(resp.status_code, 201)
+
+        self.other_project.page_set.all()[0].delete()
+        access.delete()
+
+    def test_create_with_view_access(self):
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=False)
+
+        data = {
+            'project': self.other_project.id,
+            'title': 'my-title',
+            'content': 'blah',
         }
         resp = self.client.post(self.url, data=data)
         self.assertEqual(resp.status_code, 404)
 
-    def test_create_as_non_owner(self):
+    def test_create_with_no_access(self):
         data = {'project': self.other_project.id}
+        resp = self.client.post(self.url, data=data)
+        self.assertEqual(resp.status_code, 404)
+
+    def test_create_with_nonexistent_project(self):
+        data = {
+            'project': -1,
+        }
         resp = self.client.post(self.url, data=data)
         self.assertEqual(resp.status_code, 404)
 
