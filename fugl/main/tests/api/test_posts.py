@@ -147,3 +147,110 @@ class RetrievePostTestCase(FuglViewTestCase):
         url = self._url.format(pk=-1)
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 404)
+
+
+class UpdatePostTestCase(FuglViewTestCase):
+
+    _url = '/posts/{pk}/'
+
+    def setUp(self):
+        super().setUp()
+
+        self.project = self.create_project('admin-project',
+            owner=self.admin_user)
+        self.post = self.create_post('my-post', 'blah',
+            project=self.project)
+        self.other_user = self.create_user('other')
+        self.other_project = self.create_project('other-project',
+            owner=self.other_user)
+
+        self.login(user=self.admin_user)
+
+    def test_update_success(self):
+        url = self._url.format(pk=self.post.id)
+        date_updated = self.post.date_updated
+        resp = self.client.get(url)
+        # have to check that date_updated changes!
+        updated_time = resp.data['date_updated']
+
+        data = {'title': 'new-title'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 200)
+
+        data = resp.data
+        self.assertEqual(data.get('title'), 'new-title')
+        self.post.refresh_from_db()
+        self.assertEqual(self.post.title, 'new-title')
+        self.assertNotEqual(data['date_updated'], updated_time)
+
+        # undo the update
+        self.post.title = 'my-post'
+        self.post.date_updated = date_updated
+        self.post.save()
+
+    def test_update_bad_data(self):
+        url = self._url.format(pk=self.post.id)
+
+        data = {'title': ''}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 400)
+
+        self.assertIn('title', resp.data)
+        self.assertEqual(self.post.title, 'my-post')
+
+    def test_update_nonexistent(self):
+        url = self._url.format(pk=-1)
+
+        data = {'title': 'new-title'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 404)
+
+    def test_update_with_edit_access(self):
+        post = self.create_post('a', 'b', project=self.other_project)
+        url = self._url.format(pk=post.id)
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=True)
+
+        data = {'content': 'blargh'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 200)
+
+        post.refresh_from_db()
+        self.assertEqual(post.content, 'blargh')
+        post.delete()
+
+        access.delete()
+
+    def test_update_with_view_access(self):
+        post = self.create_post('a', 'b', project=self.other_project)
+        url = self._url.format(pk=post.id)
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=False)
+
+        data = {'content': 'blargh'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 404)
+
+        post.refresh_from_db()
+        self.assertEqual(post.content, 'b')
+        post.delete()
+
+        access.delete()
+
+    def test_update_with_no_access(self):
+        post = self.create_post('a', 'b', project=self.other_project)
+        url = self._url.format(pk=post.id)
+
+        data = {'content': 'blargh'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 404)
+
+        post.refresh_from_db()
+        self.assertEqual(post.content, 'b')
+        post.delete()

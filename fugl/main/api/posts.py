@@ -49,3 +49,23 @@ class PostViewSet(viewsets.GenericViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def update(self, request, pk=None):
+        post = get_object_or_404(self.queryset, pk=pk)
+        access = UserAccess(request.user)
+        # Not allowed to change project or date_created
+        # date_updated is managed automatically
+        request.data.pop('project', None)
+        request.data.pop('date_created', None)
+        request.data.update({'date_updated': timezone.now()})
+        if access.can_edit(post.project):
+            serializer = self.serializer_class(post, data=request.data,
+                partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors,
+                    status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
