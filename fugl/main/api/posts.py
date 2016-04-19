@@ -40,3 +40,12 @@ class PostViewSet(viewsets.GenericViewSet):
                     status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def retrieve(self, request, pk=None):
+        post = get_object_or_404(self.queryset, pk=pk)
+        access = UserAccess(request.user)
+        if access.can_view(post.project):
+            serializer = self.serializer_class(post)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
