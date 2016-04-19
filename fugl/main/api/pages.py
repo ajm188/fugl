@@ -65,6 +65,7 @@ class PageViewSet(viewsets.GenericViewSet):
         page = get_object_or_404(self.queryset, pk=pk)
         access = UserAccess(request.user)
         if access.can_edit(page.project):
-            pass
+            page.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)

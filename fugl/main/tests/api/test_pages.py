@@ -247,17 +247,69 @@ class UpdatePageTestCase(FuglViewTestCase):
 
 class DeletePageTestCase(FuglViewTestCase):
 
+    _url = '/pages/{pk}/'
+
+    def setUp(self):
+        super().setUp()
+
+        self.project = self.create_project('admin-project',
+            owner=self.admin_user)
+        self.page = self.create_page('my-page', content='blah',
+            project=self.project)
+        self.other_user = self.create_user('other')
+        self.other_project = self.create_project('other-project',
+            owner=self.other_user)
+
+        self.login(user=self.admin_user)
+
     def test_delete_success(self):
-        pass
+        pages = self.project.page_set.count()
+        url = self._url.format(pk=self.page.id)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 204)
+        self.assertEqual(self.project.page_set.count(), pages - 1)
 
     def test_delete_nonexistent(self):
-        pass
+        url = self._url.format(pk=-1)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 404)
 
     def test_delete_with_edit_access(self):
-        pass
+        page = self.create_page('a', content='b', project=self.other_project)
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=True)
+
+        pages = self.other_project.page_set.count()
+        url = self._url.format(pk=page.id)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 204)
+        self.assertEqual(self.other_project.page_set.count(), pages - 1)
+
+        access.delete()
 
     def test_delete_with_view_access(self):
-        pass
+        page = self.create_page('a', content='b', project=self.other_project)
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=False)
+
+        pages = self.other_project.page_set.count()
+        url = self._url.format(pk=page.id)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(self.other_project.page_set.count(), pages)
+
+        access.delete()
+        page.delete()
 
     def test_delete_with_no_access(self):
-        pass
+        page = self.create_page('a', content='b', project=self.other_project)
+        pages = self.other_project.page_set.count()
+        url = self._url.format(pk=page.id)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(self.project.page_set.count(), pages)
