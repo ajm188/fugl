@@ -7,7 +7,6 @@ from rest_framework.response import Response
 
 from main.models import Page
 from main.models import Project
-from main.models import User
 from main.serializers import PageSerializer
 from main.util import UserAccess
 
