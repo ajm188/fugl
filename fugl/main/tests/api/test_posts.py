@@ -254,3 +254,73 @@ class UpdatePostTestCase(FuglViewTestCase):
         post.refresh_from_db()
         self.assertEqual(post.content, 'b')
         post.delete()
+
+
+class DeletePostTestCase(FuglViewTestCase):
+
+    _url = '/posts/{pk}/'
+
+    def setUp(self):
+        super().setUp()
+
+        self.project = self.create_project('admin-project',
+            owner=self.admin_user)
+        self.post = self.create_post('my-page', 'blah',
+            project=self.project)
+        self.other_user = self.create_user('other')
+        self.other_project = self.create_project('other-project',
+            owner=self.other_user)
+
+        self.login(user=self.admin_user)
+
+    def test_delete_success(self):
+        posts = self.project.post_set.count()
+        url = self._url.format(pk=self.post.id)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 204)
+        self.assertEqual(self.project.post_set.count(), posts - 1)
+
+    def test_delete_nonexistent(self):
+        url = self._url.format(pk=-1)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 404)
+
+    def test_delete_with_edit_access(self):
+        post = self.create_post('a', 'b', project=self.other_project)
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=True)
+
+        posts = self.other_project.post_set.count()
+        url = self._url.format(pk=post.id)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 204)
+        self.assertEqual(self.other_project.post_set.count(), posts - 1)
+
+        access.delete()
+
+    def test_delete_with_view_access(self):
+        post = self.create_post('a', 'b', project=self.other_project)
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=False)
+
+        posts = self.other_project.post_set.count()
+        url = self._url.format(pk=post.id)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(self.other_project.post_set.count(), posts)
+
+        access.delete()
+        post.delete()
+
+    def test_delete_with_no_access(self):
+        post = self.create_post('a', 'b', project=self.other_project)
+        posts = self.other_project.post_set.count()
+        url = self._url.format(pk=post.id)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(self.project.post_set.count(), posts)
