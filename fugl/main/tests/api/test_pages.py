@@ -3,7 +3,72 @@ from ..base import FuglViewTestCase
 
 class CreatePageTestCase(FuglViewTestCase):
 
-    pass
+    url = '/pages/'
+
+    def setUp(self):
+        super().setUp()
+
+        self.project = self.create_project('admin-project',
+            owner=self.admin_user)
+        self.other_user = self.create_user('other')
+        self.other_project = self.create_project('other-project',
+            owner=self.other_user)
+
+        self.login(user=self.admin_user)
+
+    def tearDown(self):
+        self.project.delete()
+        self.other_project.delete()
+        self.other_user.delete()
+
+        super().tearDown()
+
+    def test_create_success(self):
+        old_pages = [p for p in self.project.page_set.all()]
+        data = {
+            'project': self.project.id,
+            'title': 'my-page',
+            'content': 'page content',
+        }
+        resp = self.client.post(self.url, data=data)
+        self.assertEqual(resp.status_code, 201)
+
+        data = resp.data
+        self.assertEqual(data.get('title'), 'my-page')
+        self.assertEqual(data.get('content'), 'page content')
+
+        new_pages = self.project.page_set.all()
+        self.assertNotEqual(len(old_pages), len(new_pages))
+
+        new_pages[0].delete()
+
+    def test_create_bad_data(self):
+        data = {
+            'project': self.project.id,
+            'title': '',  # cannot be blank
+        }
+        resp = self.client.post(self.url, data=data)
+        self.assertEqual(resp.status_code, 400)
+
+        self.assertIn('title', resp.data)
+        self.assertIn('content', resp.data)
+        self.assertNotIn('project', resp.data)
+
+        del data['project']
+        resp = self.client.post(self.url, data=data)
+        self.assertEqual(resp.status_code, 400)
+
+    def test_create_with_nonexistent_project(self):
+        data = {
+            'project': -1,
+        }
+        resp = self.client.post(self.url, data=data)
+        self.assertEqual(resp.status_code, 404)
+
+    def test_create_as_non_owner(self):
+        data = {'project': self.other_project.id}
+        resp = self.client.post(self.url, data=data)
+        self.assertEqual(resp.status_code, 404)
 
 
 class RetrievePageTestCase(FuglViewTestCase):

@@ -25,7 +25,14 @@ class PageViewSet(viewsets.GenericViewSet):
         project = get_object_or_404(Project, pk=request.data['project'])
         access = UserAccess(request.user)
         if access.can_edit(project):
-            pass
+            serializer = self.serializer_class(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data,
+                    status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors,
+                    status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -33,7 +40,7 @@ class PageViewSet(viewsets.GenericViewSet):
         page = get_object_or_404(self.queryset, pk=pk)
         access = UserAccess(request.user)
         if access.can_view(page.project):
-            serializer = PageSerializer(page)
+            serializer = self.serializer_class(page)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
