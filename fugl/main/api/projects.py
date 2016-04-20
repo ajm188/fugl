@@ -1,3 +1,4 @@
+from django import db
 from django.shortcuts import get_object_or_404
 
 from rest_framework import status
@@ -83,6 +84,40 @@ class ProjectViewSet(viewsets.GenericViewSet):
 
         project.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @detail_route(methods=['post'])
+    def clone(self, request, pk=None):
+        project = get_object_or_404(self.queryset, pk=pk)
+
+        if request.method != 'POST':
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+        if project.owner != request.user:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        data = request.data
+        if 'title' not in data:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        title = data['title']
+        get_false = lambda key: data.get(key, False)
+        clone_theme = get_false('theme')
+        clone_pages = get_false('pages')
+        clone_posts = get_false('posts')
+        clone_plugins = get_false('plugins')
+        with db.transaction.atomic():
+            try:
+                cloned_project = project.clone(
+                    title,
+                    clone_theme,
+                    clone_pages,
+                    clone_posts,
+                    clone_plugins,
+                )
+            except db.utils.IntegrityError:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.serializer_class(cloned_project)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @detail_route(methods=['get', 'post', 'put', 'patch', 'delete'])
     def access(self, request, pk=None):
