@@ -259,6 +259,75 @@ class UpdateTagTestCase(FuglViewTestCase):
         tag.delete()
 
 
+class DeleteTagTestCase(FuglViewTestCase):
+
+    _url = '/tags/{pk}/'
+
+    def setUp(self):
+        super().setUp()
+
+        self.project = self.create_project('admin-project',
+            owner=self.admin_user)
+        self.tag = self.create_tag('my-tag', project=self.project)
+        self.other_user = self.create_user('other')
+        self.other_project = self.create_project('other-project',
+            owner=self.other_user)
+
+        self.login(user=self.admin_user)
+
+    def test_delete_success(self):
+        tags = self.project.tag_set.count()
+        url = self._url.format(pk=self.tag.id)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 204)
+        self.assertEqual(self.project.tag_set.count(), tags - 1)
+
+    def test_delete_nonexistent(self):
+        url = self._url.format(pk=-1)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 404)
+
+    def test_delete_with_edit_access(self):
+        tag = self.create_tag('a', project=self.other_project)
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=True)
+
+        tags = self.other_project.tag_set.count()
+        url = self._url.format(pk=tag.id)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 204)
+        self.assertEqual(self.other_project.tag_set.count(), tags - 1)
+
+        access.delete()
+
+    def test_delete_with_view_access(self):
+        tag = self.create_tag('a', project=self.other_project)
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=False)
+
+        tags = self.other_project.tag_set.count()
+        url = self._url.format(pk=tag.id)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(self.other_project.tag_set.count(), tags)
+
+        access.delete()
+        tag.delete()
+
+    def test_delete_with_no_access(self):
+        tag = self.create_tag('a', project=self.other_project)
+        tags = self.other_project.tag_set.count()
+        url = self._url.format(pk=tag.id)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(self.project.tag_set.count(), tags)
+
+
 class AvailableTagTestCase(FuglViewTestCase):
 
     url = '/tags/available/'

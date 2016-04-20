@@ -78,3 +78,12 @@ class TagViewSet(viewsets.GenericViewSet):
                     status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, pk=None):
+        tag = get_object_or_404(self.queryset, pk=pk)
+        access = UserAccess(request.user)
+        if access.can_edit(tag.project):
+            tag.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
