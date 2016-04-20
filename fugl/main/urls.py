@@ -8,6 +8,7 @@ from .api import CategoryViewSet
 from .api import PageViewSet
 from .api import PostViewSet
 from .api import ProjectViewSet
+from .api import TagViewSet
 from .api import UserViewSet
 from .views import (root_controller, UserHomeView, RegistrationView,
                     CreateProjectView, DeleteProjectView,
@@ -93,4 +94,5 @@ router.register(r'projects', ProjectViewSet)
 router.register(r'pages', PageViewSet)
 router.register(r'posts', PostViewSet)
 router.register(r'categories', CategoryViewSet)
+router.register(r'tags', TagViewSet)
 urlpatterns += router.urls
