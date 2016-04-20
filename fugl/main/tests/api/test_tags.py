@@ -3,9 +3,9 @@ import json
 from ..base import FuglViewTestCase
 
 
-class CreateCategoryTestCase(FuglViewTestCase):
+class CreateTagTestCase(FuglViewTestCase):
 
-    url = '/categories/'
+    url = '/tags/'
 
     def setUp(self):
         super().setUp()
@@ -26,40 +26,40 @@ class CreateCategoryTestCase(FuglViewTestCase):
         super().tearDown()
 
     def test_create_success(self):
-        old_category_count = self.project.category_set.count()
+        old_tag_count = self.project.tag_set.count()
         data = {
             'project': self.project.id,
-            'title': 'my-category',
+            'title': 'my-tag',
         }
         resp = self.client.post(self.url, data=data)
         self.assertEqual(resp.status_code, 201)
 
         data = resp.data
-        self.assertEqual(data.get('title'), 'my-category')
+        self.assertEqual(data.get('title'), 'my-tag')
 
-        categories = self.project.category_set
-        new_category_count = categories.count()
-        self.assertEqual(old_category_count + 1, new_category_count)
+        tags = self.project.tag_set
+        new_tag_count = tags.count()
+        self.assertEqual(old_tag_count + 1, new_tag_count)
 
-        [c.delete() for c in categories.all()]
+        [c.delete() for c in tags.all()]
 
     def test_create_duplicate(self):
-        self.create_category('my-category', project=self.project)
-        old_count = self.project.category_set.count()
+        self.create_tag('my-tag', project=self.project)
+        old_count = self.project.tag_set.count()
 
         data = {
             'project': self.project.id,
-            'title': 'my-category',
+            'title': 'my-tag',
         }
         resp = self.client.post(self.url, data=data)
         self.assertEqual(resp.status_code, 400)
 
         self.assertIn('non_field_errors', resp.data)
 
-        categories = self.project.category_set
-        self.assertEqual(old_count, categories.count())
+        tags = self.project.tag_set
+        self.assertEqual(old_count, tags.count())
 
-        [c.delete() for c in categories.all()]
+        [c.delete() for c in tags.all()]
 
     def test_create_bad_data(self):
         data = {
@@ -88,7 +88,7 @@ class CreateCategoryTestCase(FuglViewTestCase):
         resp = self.client.post(self.url, data=data)
         self.assertEqual(resp.status_code, 201)
 
-        self.other_project.category_set.all()[0].delete()
+        self.other_project.tag_set.all()[0].delete()
         access.delete()
 
     def test_create_with_view_access(self):
@@ -115,24 +115,23 @@ class CreateCategoryTestCase(FuglViewTestCase):
         self.assertEqual(resp.status_code, 404)
 
 
-class RetrieveCategoryTestCase(FuglViewTestCase):
+class RetrieveTagTestCase(FuglViewTestCase):
 
-    _url = '/categories/{pk}/'
+    _url = '/tags/{pk}/'
 
     def setUp(self):
         super().setUp()
 
         self.project = self.create_project('admin-project',
             owner=self.admin_user)
-        self.category = self.create_category('test-category',
-            project=self.project)
-        self.url = self._url.format(pk=self.category.id)
+        self.tag = self.create_tag('test-tag', project=self.project)
+        self.url = self._url.format(pk=self.tag.id)
 
         self.user = self.create_user('user')
         self.login(user=self.user, password='user')
 
     def tearDown(self):
-        self.category.delete()
+        self.tag.delete()
         self.project.delete()
         self.user.delete()
 
@@ -146,7 +145,7 @@ class RetrieveCategoryTestCase(FuglViewTestCase):
 
         data = resp.data
         self.assertIn('title', data)
-        self.assertEqual(data['title'], self.category.title)
+        self.assertEqual(data['title'], self.tag.title)
 
         access.delete()
 
@@ -160,17 +159,16 @@ class RetrieveCategoryTestCase(FuglViewTestCase):
         self.assertEqual(resp.status_code, 404)
 
 
-class UpdateCategoryTestCase(FuglViewTestCase):
+class UpdateTagTestCase(FuglViewTestCase):
 
-    _url = '/categories/{pk}/'
+    _url = '/tags/{pk}/'
 
     def setUp(self):
         super().setUp()
 
         self.project = self.create_project('admin-project',
             owner=self.admin_user)
-        self.category = self.create_category('my-category',
-            project=self.project)
+        self.tag = self.create_tag('my-tag', project=self.project)
         self.other_user = self.create_user('other')
         self.other_project = self.create_project('other-project',
             owner=self.other_user)
@@ -178,7 +176,7 @@ class UpdateCategoryTestCase(FuglViewTestCase):
         self.login(user=self.admin_user)
 
     def test_update_success(self):
-        url = self._url.format(pk=self.category.id)
+        url = self._url.format(pk=self.tag.id)
 
         data = {'title': 'new-title'}
         resp = self.client.put(url, data=json.dumps(data),
@@ -187,15 +185,15 @@ class UpdateCategoryTestCase(FuglViewTestCase):
 
         data = resp.data
         self.assertEqual(data.get('title'), 'new-title')
-        self.category.refresh_from_db()
-        self.assertEqual(self.category.title, 'new-title')
+        self.tag.refresh_from_db()
+        self.assertEqual(self.tag.title, 'new-title')
 
         # undo the update
-        self.category.title = 'my-category'
-        self.category.save()
+        self.tag.title = 'my-tag'
+        self.tag.save()
 
     def test_update_bad_data(self):
-        url = self._url.format(pk=self.category.id)
+        url = self._url.format(pk=self.tag.id)
 
         data = {'title': ''}
         resp = self.client.put(url, data=json.dumps(data),
@@ -203,7 +201,7 @@ class UpdateCategoryTestCase(FuglViewTestCase):
         self.assertEqual(resp.status_code, 400)
 
         self.assertIn('title', resp.data)
-        self.assertEqual(self.category.title, 'my-category')
+        self.assertEqual(self.tag.title, 'my-tag')
 
     def test_update_nonexistent(self):
         url = self._url.format(pk=-1)
@@ -214,8 +212,8 @@ class UpdateCategoryTestCase(FuglViewTestCase):
         self.assertEqual(resp.status_code, 404)
 
     def test_update_with_edit_access(self):
-        category = self.create_category('a', project=self.other_project)
-        url = self._url.format(pk=category.id)
+        tag = self.create_tag('a', project=self.other_project)
+        url = self._url.format(pk=tag.id)
         access = self.create_access(self.admin_user, self.other_project,
             can_edit=True)
 
@@ -224,15 +222,15 @@ class UpdateCategoryTestCase(FuglViewTestCase):
             content_type='application/json')
         self.assertEqual(resp.status_code, 200)
 
-        category.refresh_from_db()
-        self.assertEqual(category.title, 'blargh')
-        category.delete()
+        tag.refresh_from_db()
+        self.assertEqual(tag.title, 'blargh')
+        tag.delete()
 
         access.delete()
 
     def test_update_with_view_access(self):
-        category = self.create_category('a', project=self.other_project)
-        url = self._url.format(pk=category.id)
+        tag = self.create_tag('a', project=self.other_project)
+        url = self._url.format(pk=tag.id)
         access = self.create_access(self.admin_user, self.other_project,
             can_edit=False)
 
@@ -241,37 +239,36 @@ class UpdateCategoryTestCase(FuglViewTestCase):
             content_type='application/json')
         self.assertEqual(resp.status_code, 404)
 
-        category.refresh_from_db()
-        self.assertEqual(category.title, 'a')
-        category.delete()
+        tag.refresh_from_db()
+        self.assertEqual(tag.title, 'a')
+        tag.delete()
 
         access.delete()
 
     def test_update_with_no_access(self):
-        category = self.create_category('a', project=self.other_project)
-        url = self._url.format(pk=category.id)
+        tag = self.create_tag('a', project=self.other_project)
+        url = self._url.format(pk=tag.id)
 
         data = {'title': 'blargh'}
         resp = self.client.put(url, data=json.dumps(data),
             content_type='application/json')
         self.assertEqual(resp.status_code, 404)
 
-        category.refresh_from_db()
-        self.assertEqual(category.title, 'a')
-        category.delete()
+        tag.refresh_from_db()
+        self.assertEqual(tag.title, 'a')
+        tag.delete()
 
 
-class DeleteCategoryTestCase(FuglViewTestCase):
+class DeleteTagTestCase(FuglViewTestCase):
 
-    _url = '/categories/{pk}/'
+    _url = '/tags/{pk}/'
 
     def setUp(self):
         super().setUp()
 
         self.project = self.create_project('admin-project',
             owner=self.admin_user)
-        self.category = self.create_category('my-category',
-            project=self.project)
+        self.tag = self.create_tag('my-tag', project=self.project)
         self.other_user = self.create_user('other')
         self.other_project = self.create_project('other-project',
             owner=self.other_user)
@@ -279,12 +276,12 @@ class DeleteCategoryTestCase(FuglViewTestCase):
         self.login(user=self.admin_user)
 
     def test_delete_success(self):
-        categories = self.project.category_set.count()
-        url = self._url.format(pk=self.category.id)
+        tags = self.project.tag_set.count()
+        url = self._url.format(pk=self.tag.id)
 
         resp = self.client.delete(url)
         self.assertEqual(resp.status_code, 204)
-        self.assertEqual(self.project.category_set.count(), categories - 1)
+        self.assertEqual(self.project.tag_set.count(), tags - 1)
 
     def test_delete_nonexistent(self):
         url = self._url.format(pk=-1)
@@ -293,56 +290,54 @@ class DeleteCategoryTestCase(FuglViewTestCase):
         self.assertEqual(resp.status_code, 404)
 
     def test_delete_with_edit_access(self):
-        category = self.create_category('a', project=self.other_project)
+        tag = self.create_tag('a', project=self.other_project)
         access = self.create_access(self.admin_user, self.other_project,
             can_edit=True)
 
-        categories = self.other_project.category_set.count()
-        url = self._url.format(pk=category.id)
+        tags = self.other_project.tag_set.count()
+        url = self._url.format(pk=tag.id)
 
         resp = self.client.delete(url)
         self.assertEqual(resp.status_code, 204)
-        self.assertEqual(self.other_project.category_set.count(),
-            categories - 1)
+        self.assertEqual(self.other_project.tag_set.count(), tags - 1)
 
         access.delete()
 
     def test_delete_with_view_access(self):
-        category = self.create_category('a', project=self.other_project)
+        tag = self.create_tag('a', project=self.other_project)
         access = self.create_access(self.admin_user, self.other_project,
             can_edit=False)
 
-        categories = self.other_project.category_set.count()
-        url = self._url.format(pk=category.id)
+        tags = self.other_project.tag_set.count()
+        url = self._url.format(pk=tag.id)
 
         resp = self.client.delete(url)
         self.assertEqual(resp.status_code, 404)
-        self.assertEqual(self.other_project.category_set.count(), categories)
+        self.assertEqual(self.other_project.tag_set.count(), tags)
 
         access.delete()
-        category.delete()
+        tag.delete()
 
     def test_delete_with_no_access(self):
-        category = self.create_category('a', project=self.other_project)
-        categories = self.other_project.category_set.count()
-        url = self._url.format(pk=category.id)
+        tag = self.create_tag('a', project=self.other_project)
+        tags = self.other_project.tag_set.count()
+        url = self._url.format(pk=tag.id)
 
         resp = self.client.delete(url)
         self.assertEqual(resp.status_code, 404)
-        self.assertEqual(self.project.category_set.count(), categories)
+        self.assertEqual(self.project.tag_set.count(), tags)
 
 
-class AvailableCategoryTestCase(FuglViewTestCase):
+class AvailableTagTestCase(FuglViewTestCase):
 
-    url = '/categories/available/'
+    url = '/tags/available/'
 
     def setUp(self):
         super().setUp()
 
         self.project = self.create_project('admin-project',
             owner=self.admin_user)
-        self.category = self.create_category('test-category',
-            project=self.project)
+        self.tag = self.create_tag('test-tag', project=self.project)
 
         self.other_user = self.create_user('other')
         self.other_project = self.create_project('other-project',
@@ -351,7 +346,7 @@ class AvailableCategoryTestCase(FuglViewTestCase):
         self.login(user=self.admin_user)
 
     def tearDown(self):
-        self.category.delete()
+        self.tag.delete()
         self.project.delete()
         self.other_user.delete()
 
@@ -360,7 +355,7 @@ class AvailableCategoryTestCase(FuglViewTestCase):
     def test_available_for_available(self):
         data = {
             'project': self.project.id,
-            'title': 'some-other-category',
+            'title': 'some-other-tag',
         }
 
         resp = self.client.get(self.url, data=data)
@@ -372,7 +367,7 @@ class AvailableCategoryTestCase(FuglViewTestCase):
     def test_available_for_taken(self):
         data = {
             'project': self.project.id,
-            'title': 'test-category',
+            'title': 'test-tag',
         }
 
         resp = self.client.get(self.url, data)

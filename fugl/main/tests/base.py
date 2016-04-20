@@ -11,6 +11,7 @@ from main.models import Page
 from main.models import Post
 from main.models import Project
 from main.models import ProjectAccess
+from main.models import Tag
 from main.models import Theme
 from main.models import User
 
@@ -40,11 +41,11 @@ class FuglTestCase(TestCase):
                                  password=password)
 
     def create_project(self, title, description='', **kwargs):
-        kwargs.update({'title': title, 'description': description})
         kwargs['theme'] = kwargs.get('theme', self.default_theme)
-        project = Project.objects.create(**kwargs)
-        project.save()
-        return project
+        return self._create_object(
+            Project, ('title', title), ('description', description),
+            **kwargs
+        )
 
     def create_user(self, username, **kwargs):
         kwargs.update({'username': username})
@@ -53,32 +54,37 @@ class FuglTestCase(TestCase):
         user.save()
         return user
 
+    def _create_object(self, cls, *args, **kwargs):
+        for name, val in args:
+            kwargs[name] = val
+        obj = cls.objects.create(**kwargs)
+        obj.save()
+        return obj
+
     def create_access(self, user, project, can_edit=False):
-        access = ProjectAccess.objects.create(
-            user=user, project=project, can_edit=can_edit)
-        access.save()
-        return access
+        return self._create_object(
+            ProjectAccess,
+            ('user', user), ('project', project), ('can_edit', can_edit),
+        )
 
     def create_page(self, title, **kwargs):
-        kwargs.update({'title': title})
-        page = Page.objects.create(**kwargs)
-        page.save()
-        return page
+        return self._create_object(Page, ('title', title), **kwargs)
 
     def create_post(self, title, content, **kwargs):
-        kwargs.update({'title': title, 'content': content})
         timestamp = timezone.now()
         kwargs['date_created'] = kwargs.get('date_created', timestamp)
         kwargs['date_updated'] = kwargs.get('date_updated', timestamp)
-        post = Post.objects.create(**kwargs)
-        post.save()
-        return post
+        return self._create_object(
+            Post,
+            ('title', title), ('content', content),
+            **kwargs
+        )
 
     def create_category(self, title, **kwargs):
-        kwargs.update({'title': title})
-        category = Category.objects.create(**kwargs)
-        category.save()
-        return category
+        return self._create_object(Category, ('title', title), **kwargs)
+
+    def create_tag(self, title, **kwargs):
+        return self._create_object(Tag, ('title', title), **kwargs)
 
 
 class FuglViewTestCase(FuglTestCase):
