@@ -11,6 +11,7 @@ from main.models import Page
 from main.models import Post
 from main.models import Project
 from main.models import ProjectAccess
+from main.models import Tag
 from main.models import Theme
 from main.models import User
 
@@ -79,6 +80,12 @@ class FuglTestCase(TestCase):
         category = Category.objects.create(**kwargs)
         category.save()
         return category
+
+    def create_tag(self, title, **kwargs):
+        kwargs.update({'title': title})
+        tag = Tag.objects.create(**kwargs)
+        tag.save()
+        return tag
 
 
 class FuglViewTestCase(FuglTestCase):
