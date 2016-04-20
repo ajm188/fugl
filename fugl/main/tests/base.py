@@ -4,8 +4,10 @@ Base class for Fugl tests that set up some database stuff.
 
 from django.test import Client
 from django.test import TestCase
+from django.utils import timezone
 
 from main.models import Page
+from main.models import Post
 from main.models import Project
 from main.models import ProjectAccess
 from main.models import Theme
@@ -61,6 +63,15 @@ class FuglTestCase(TestCase):
         page = Page.objects.create(**kwargs)
         page.save()
         return page
+
+    def create_post(self, title, content, **kwargs):
+        kwargs.update({'title': title, 'content': content})
+        timestamp = timezone.now()
+        kwargs['date_created'] = kwargs.get('date_created', timestamp)
+        kwargs['date_updated'] = kwargs.get('date_updated', timestamp)
+        post = Post.objects.create(**kwargs)
+        post.save()
+        return post
 
 
 class FuglViewTestCase(FuglTestCase):
