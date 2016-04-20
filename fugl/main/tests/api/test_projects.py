@@ -1,7 +1,5 @@
 import json
 
-from django.test import Client
-
 from main.models import Project
 from main.models import ProjectAccess
 from main.models import User
