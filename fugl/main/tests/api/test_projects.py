@@ -1,4 +1,5 @@
 import json
+from unittest import skip
 
 from main.models import Project
 from main.models import ProjectAccess
@@ -347,3 +348,147 @@ class ProjectViewSetTestCase(FuglViewTestCase):
         path = self.detail_url.format(-1)
         resp = self.client.delete(path, data=data)
         self.assertEqual(resp.status_code, 404)
+
+
+class CloneProjectTestCase(FuglViewTestCase):
+
+    _url = '/projects/{pk}/clone/'
+
+    def setUp(self):
+        super().setUp()
+
+        self.project = self.create_project('t', 'd',
+            owner=self.admin_user)
+
+        self.other_user = self.create_user(username='other')
+        self.other_project = self.create_project('other-project', '',
+            owner=self.other_user)
+
+        self.login(user=self.admin_user)
+
+    def tearDown(self):
+        self.project.delete()
+        self.other_project.delete()
+        self.other_user.delete()
+
+    def test_clone_success(self):
+        url = self._url.format(pk=self.project.id)
+        data = {'title': 'new-title'}
+
+        resp = self.client.post(url, data=data)
+        self.assertEqual(resp.status_code, 201)
+
+        data = resp.data
+        self.assertIn('title', data)
+        self.assertEqual(data['title'], 'new-title')
+
+        new_project_query = Project.objects.filter(owner=self.admin_user,
+            title='new-title')
+        self.assertTrue(new_project_query.exists())
+
+        new_project = new_project_query.get()
+        self.assertEqual(new_project.description, self.project.description)
+        self.assertEqual(new_project.theme, self.default_theme)
+        self.assertEqual(new_project.page_set.count(), 0)
+        self.assertEqual(new_project.post_set.count(), 0)
+
+        new_project.delete()
+
+    def test_clone_all_attrs(self):
+        page = self.create_page('page', content='content',
+            project=self.project)
+        post = self.create_post('post', content='content',
+            project=self.project)
+        theme = self.create_theme('my-theme', '/foo/bar', 'markup')
+        self.project.theme = theme
+        self.project.save()
+
+        url = self._url.format(pk=self.project.id)
+        data = {
+            'title': 'new-title',
+            'theme': True,
+            'pages': True,
+            'posts': True,
+            'plugins': True,
+        }
+
+        resp = self.client.post(url, data=data)
+        self.assertEqual(resp.status_code, 201)
+
+        data = resp.data
+        self.assertIn('title', data)
+        self.assertEqual(data['title'], 'new-title')
+
+        new_project_query = Project.objects.filter(owner=self.admin_user,
+            title='new-title')
+        self.assertTrue(new_project_query.exists())
+
+        new_project = new_project_query.get()
+        self.assertEqual(new_project.description, self.project.description)
+        self.assertEqual(new_project.theme, self.project.theme)
+        self.assertEqual(new_project.page_set.count(), 1)
+        self.assertEqual(new_project.post_set.count(), 1)
+
+        new_project.delete()
+
+        self.project.theme = self.default_theme
+        self.project.save()
+        page.delete()
+        post.delete()
+        theme.delete()
+
+    def test_clone_duplicate_title(self):
+        count = self.admin_user.project_set.count()
+
+        url = self._url.format(pk=self.project.id)
+        data = {'title': self.project.title}
+
+        resp = self.client.post(url, data=data)
+        self.assertEqual(resp.status_code, 400)
+
+        self.assertEqual(self.admin_user.project_set.count(), count)
+
+    def test_clone_bad_data(self):
+        count = self.admin_user.project_set.count()
+
+        url = self._url.format(pk=self.project.id)
+        data = {}
+
+        resp = self.client.post(url, data=data)
+        self.assertEqual(resp.status_code, 400)
+
+        self.assertEqual(self.admin_user.project_set.count(), count)
+
+    def test_clone_non_owner(self):
+        count = self.admin_user.project_set.count()
+        other_count = self.other_user.project_set.count()
+
+        url = self._url.format(pk=self.other_project.id)
+        data = {}
+
+        resp = self.client.post(url, data=data)
+        self.assertEqual(resp.status_code, 404)
+
+        self.assertEqual(self.admin_user.project_set.count(), count)
+        self.assertEqual(self.other_user.project_set.count(), other_count)
+
+    def test_clone_wrong_method(self):
+        count = self.admin_user.project_set.count()
+
+        url = self._url.format(pk=self.project.id)
+
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 405)
+
+        self.assertEqual(self.admin_user.project_set.count(), count)
+
+    def test_clone_non_existent(self):
+        count = self.admin_user.project_set.count()
+
+        url = self._url.format(pk=-1)
+        data = {}
+
+        resp = self.client.post(url, data=data)
+        self.assertEqual(resp.status_code, 404)
+
+        self.assertEqual(self.admin_user.project_set.count(), count)
