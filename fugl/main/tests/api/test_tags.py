@@ -159,6 +159,106 @@ class RetrieveTagTestCase(FuglViewTestCase):
         self.assertEqual(resp.status_code, 404)
 
 
+class UpdateTagTestCase(FuglViewTestCase):
+
+    _url = '/tags/{pk}/'
+
+    def setUp(self):
+        super().setUp()
+
+        self.project = self.create_project('admin-project',
+            owner=self.admin_user)
+        self.tag = self.create_tag('my-tag', project=self.project)
+        self.other_user = self.create_user('other')
+        self.other_project = self.create_project('other-project',
+            owner=self.other_user)
+
+        self.login(user=self.admin_user)
+
+    def test_update_success(self):
+        url = self._url.format(pk=self.tag.id)
+
+        data = {'title': 'new-title'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 200)
+
+        data = resp.data
+        self.assertEqual(data.get('title'), 'new-title')
+        self.tag.refresh_from_db()
+        self.assertEqual(self.tag.title, 'new-title')
+
+        # undo the update
+        self.tag.title = 'my-tag'
+        self.tag.save()
+
+    def test_update_bad_data(self):
+        url = self._url.format(pk=self.tag.id)
+
+        data = {'title': ''}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 400)
+
+        self.assertIn('title', resp.data)
+        self.assertEqual(self.tag.title, 'my-tag')
+
+    def test_update_nonexistent(self):
+        url = self._url.format(pk=-1)
+
+        data = {'title': 'new-title'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 404)
+
+    def test_update_with_edit_access(self):
+        tag = self.create_tag('a', project=self.other_project)
+        url = self._url.format(pk=tag.id)
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=True)
+
+        data = {'title': 'blargh'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 200)
+
+        tag.refresh_from_db()
+        self.assertEqual(tag.title, 'blargh')
+        tag.delete()
+
+        access.delete()
+
+    def test_update_with_view_access(self):
+        tag = self.create_tag('a', project=self.other_project)
+        url = self._url.format(pk=tag.id)
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=False)
+
+        data = {'title': 'blargh'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 404)
+
+        tag.refresh_from_db()
+        self.assertEqual(tag.title, 'a')
+        tag.delete()
+
+        access.delete()
+
+    def test_update_with_no_access(self):
+        tag = self.create_tag('a', project=self.other_project)
+        url = self._url.format(pk=tag.id)
+
+        data = {'title': 'blargh'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 404)
+
+        tag.refresh_from_db()
+        self.assertEqual(tag.title, 'a')
+        tag.delete()
+
+
 class AvailableTagTestCase(FuglViewTestCase):
 
     url = '/tags/available/'
