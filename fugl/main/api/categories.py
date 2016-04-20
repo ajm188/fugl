@@ -34,3 +34,12 @@ class CategoryViewSet(viewsets.GenericViewSet):
                     status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def retrieve(self, request, pk=None):
+        category = get_object_or_404(self.queryset, pk=pk)
+        access = UserAccess(request.user)
+        if access.can_view(category.project):
+            serializer = self.serializer_class(category)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
