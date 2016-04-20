@@ -8,7 +8,7 @@
     
     
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for main/serializers/project_access.py: 100%</title>
+    <title>Coverage for main/serializers/post.py: 100%</title>
     <link rel="stylesheet" href="style.css" type="text/css">
     
     <script type="text/javascript" src="jquery.min.js"></script>
@@ -23,7 +23,7 @@
 
 <div id="header">
     <div class="content">
-        <h1>Coverage for <b>main/serializers/project_access.py</b> :
+        <h1>Coverage for <b>main/serializers/post.py</b> :
             <span class="pc_cov">100%</span>
         </h1>
 
@@ -82,24 +82,30 @@
 <p id="n13" class="pln"><a href="#n13">13</a></p>
 <p id="n14" class="pln"><a href="#n14">14</a></p>
 <p id="n15" class="pln"><a href="#n15">15</a></p>
+<p id="n16" class="pln"><a href="#n16">16</a></p>
+<p id="n17" class="pln"><a href="#n17">17</a></p>
+<p id="n18" class="pln"><a href="#n18">18</a></p>
                 
             </td>
             <td class="text">
 <p id="t1" class="stm run hide_run"><span class="key">from</span> <span class="nam">rest_framework</span> <span class="key">import</span> <span class="nam">serializers</span><span class="strut">&nbsp;</span></p>
 <p id="t2" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t3" class="stm run hide_run"><span class="key">from</span> <span class="nam">main</span><span class="op">.</span><span class="nam">models</span> <span class="key">import</span> <span class="nam">ProjectAccess</span><span class="strut">&nbsp;</span></p>
+<p id="t3" class="stm run hide_run"><span class="key">from</span> <span class="nam">main</span><span class="op">.</span><span class="nam">models</span> <span class="key">import</span> <span class="nam">Post</span><span class="strut">&nbsp;</span></p>
 <p id="t4" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t5" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t6" class="stm run hide_run"><span class="key">class</span> <span class="nam">ProjectAccessSerializer</span><span class="op">(</span><span class="nam">serializers</span><span class="op">.</span><span class="nam">ModelSerializer</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t6" class="stm run hide_run"><span class="key">class</span> <span class="nam">PostSerializer</span><span class="op">(</span><span class="nam">serializers</span><span class="op">.</span><span class="nam">ModelSerializer</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t7" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t8" class="stm run hide_run">&nbsp; &nbsp; <span class="key">class</span> <span class="nam">Meta</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t9" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">model</span> <span class="op">=</span> <span class="nam">ProjectAccess</span><span class="strut">&nbsp;</span></p>
+<p id="t9" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">model</span> <span class="op">=</span> <span class="nam">Post</span><span class="strut">&nbsp;</span></p>
 <p id="t10" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">fields</span> <span class="op">=</span> <span class="op">[</span><span class="strut">&nbsp;</span></p>
 <p id="t11" class="pln">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="str">&#39;id&#39;</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
-<p id="t12" class="pln">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="str">&#39;user&#39;</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
-<p id="t13" class="pln">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="str">&#39;project&#39;</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
-<p id="t14" class="pln">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="str">&#39;can_edit&#39;</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
-<p id="t15" class="pln">&nbsp; &nbsp; &nbsp; &nbsp; <span class="op">]</span><span class="strut">&nbsp;</span></p>
+<p id="t12" class="pln">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="str">&#39;title&#39;</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
+<p id="t13" class="pln">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="str">&#39;content&#39;</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
+<p id="t14" class="pln">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="str">&#39;project&#39;</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
+<p id="t15" class="pln">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="str">&#39;category&#39;</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
+<p id="t16" class="pln">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="str">&#39;date_created&#39;</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
+<p id="t17" class="pln">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="str">&#39;date_updated&#39;</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
+<p id="t18" class="pln">&nbsp; &nbsp; &nbsp; &nbsp; <span class="op">]</span><span class="strut">&nbsp;</span></p>
                 
             </td>
         </tr>
