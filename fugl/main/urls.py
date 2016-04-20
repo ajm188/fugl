@@ -4,6 +4,7 @@ from django.contrib.auth.views import logout_then_login as logout_view
 
 from rest_framework import routers
 
+from .api import CategoryViewSet
 from .api import PageViewSet
 from .api import PostViewSet
 from .api import ProjectViewSet
@@ -91,4 +92,5 @@ router.register(r'users', UserViewSet)
 router.register(r'projects', ProjectViewSet)
 router.register(r'pages', PageViewSet)
 router.register(r'posts', PostViewSet)
+router.register(r'categories', CategoryViewSet)
 urlpatterns += router.urls

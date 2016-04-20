@@ -6,6 +6,7 @@ from django.test import Client
 from django.test import TestCase
 from django.utils import timezone
 
+from main.models import Category
 from main.models import Page
 from main.models import Post
 from main.models import Project
@@ -72,6 +73,12 @@ class FuglTestCase(TestCase):
         post = Post.objects.create(**kwargs)
         post.save()
         return post
+
+    def create_category(self, title, **kwargs):
+        kwargs.update({'title': title})
+        category = Category.objects.create(**kwargs)
+        category.save()
+        return category
 
 
 class FuglViewTestCase(FuglTestCase):
