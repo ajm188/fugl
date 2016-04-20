@@ -1,3 +1,4 @@
+from .category import CategorySerializer
 from .page import PageSerializer
 from .post import PostSerializer
 from .project import ProjectSerializer
