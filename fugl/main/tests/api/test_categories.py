@@ -1,5 +1,4 @@
 import json
-from unittest import skip
 
 from ..base import FuglViewTestCase
 
