@@ -331,3 +331,93 @@ class DeleteCategoryTestCase(FuglViewTestCase):
         resp = self.client.delete(url)
         self.assertEqual(resp.status_code, 404)
         self.assertEqual(self.project.category_set.count(), categories)
+
+
+class AvailableCategoryTestCase(FuglViewTestCase):
+
+    url = '/categories/available/'
+
+    def setUp(self):
+        super().setUp()
+
+        self.project = self.create_project('admin-project',
+            owner=self.admin_user)
+        self.category = self.create_category('test-category',
+            project=self.project)
+
+        self.other_user = self.create_user('other')
+        self.other_project = self.create_project('other-project',
+            owner=self.other_user)
+
+        self.login(user=self.admin_user)
+
+    def tearDown(self):
+        self.category.delete()
+        self.project.delete()
+        self.other_user.delete()
+
+        super().tearDown()
+
+    def test_available_for_available(self):
+        data = {
+            'project': self.project.id,
+            'title': 'some-other-category',
+        }
+
+        resp = self.client.get(self.url, data=data)
+        self.assertEqual(resp.status_code, 200)
+
+        data = resp.data
+        self.assertTrue(data['available'])
+
+    def test_available_for_taken(self):
+        data = {
+            'project': self.project.id,
+            'title': 'test-category',
+        }
+
+        resp = self.client.get(self.url, data)
+        self.assertEqual(resp.status_code, 200)
+
+        data = resp.data
+        self.assertFalse(data['available'])
+
+    def test_available_bad_data(self):
+        data = {'project': self.project.id}
+
+        resp = self.client.get(self.url, data)
+        self.assertEqual(resp.status_code, 400)
+
+    def test_available_with_edit_access(self):
+        data = {'project': self.other_project.id, 'title': 'blah'}
+
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=True)
+
+        resp = self.client.get(self.url, data)
+        self.assertEqual(resp.status_code, 200)
+
+        access.delete()
+
+    def test_available_with_view_access(self):
+        data = {'project': self.other_project.id, 'title': 'blah'}
+
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=False)
+
+        resp = self.client.get(self.url, data)
+        self.assertEqual(resp.status_code, 404)
+
+        access.delete()
+
+    def test_available_with_no_access(self):
+        data = {'project': self.other_project.id, 'title': 'blah'}
+
+        resp = self.client.get(self.url, data)
+        self.assertEqual(resp.status_code, 404)
+
+    def test_available_non_existent(self):
+        data = {'project': -1, 'title': 'blah'}
+
+        resp = self.client.get(self.url, data)
+        self.assertEqual(resp.status_code, 404)
