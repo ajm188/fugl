@@ -35,3 +35,21 @@ class TagViewSet(viewsets.GenericViewSet):
                     status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+    @list_route(methods=['get'])
+    def available(self, request):
+        params = request.query_params
+        if 'project' not in params or 'title' not in params:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        project = get_object_or_404(Project, pk=params['project'])
+        if not UserAccess(request.user).can_edit(project):
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        project_tags = self.queryset.filter(project=project)
+
+        title = params['title']
+        data = {
+            'available': not project_tags.filter(title=title).exists(),
+        }
+        return Response(data, status=status.HTTP_200_OK)
