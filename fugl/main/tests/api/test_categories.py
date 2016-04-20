@@ -159,3 +159,104 @@ class RetrieveCategoryTestCase(FuglViewTestCase):
         url = self._url.format(pk=-1)
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 404)
+
+
+class UpdateCategoryTestCase(FuglViewTestCase):
+
+    _url = '/categories/{pk}/'
+
+    def setUp(self):
+        super().setUp()
+
+        self.project = self.create_project('admin-project',
+            owner=self.admin_user)
+        self.category = self.create_category('my-category',
+            project=self.project)
+        self.other_user = self.create_user('other')
+        self.other_project = self.create_project('other-project',
+            owner=self.other_user)
+
+        self.login(user=self.admin_user)
+
+    def test_update_success(self):
+        url = self._url.format(pk=self.category.id)
+
+        data = {'title': 'new-title'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 200)
+
+        data = resp.data
+        self.assertEqual(data.get('title'), 'new-title')
+        self.category.refresh_from_db()
+        self.assertEqual(self.category.title, 'new-title')
+
+        # undo the update
+        self.category.title = 'my-category'
+        self.category.save()
+
+    def test_update_bad_data(self):
+        url = self._url.format(pk=self.category.id)
+
+        data = {'title': ''}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 400)
+
+        self.assertIn('title', resp.data)
+        self.assertEqual(self.category.title, 'my-category')
+
+    def test_update_nonexistent(self):
+        url = self._url.format(pk=-1)
+
+        data = {'title': 'new-title'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 404)
+
+    def test_update_with_edit_access(self):
+        category = self.create_category('a', project=self.other_project)
+        url = self._url.format(pk=category.id)
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=True)
+
+        data = {'title': 'blargh'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 200)
+
+        category.refresh_from_db()
+        self.assertEqual(category.title, 'blargh')
+        category.delete()
+
+        access.delete()
+
+    def test_update_with_view_access(self):
+        category = self.create_category('a', project=self.other_project)
+        url = self._url.format(pk=category.id)
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=False)
+
+        data = {'title': 'blargh'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 404)
+
+        category.refresh_from_db()
+        self.assertEqual(category.title, 'a')
+        category.delete()
+
+        access.delete()
+
+    def test_update_with_no_access(self):
+        category = self.create_category('a', project=self.other_project)
+        url = self._url.format(pk=category.id)
+
+        data = {'title': 'blargh'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 404)
+
+        category.refresh_from_db()
+        self.assertEqual(category.title, 'a')
+        category.delete()
