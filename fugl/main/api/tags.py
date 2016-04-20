@@ -53,3 +53,12 @@ class TagViewSet(viewsets.GenericViewSet):
             'available': not project_tags.filter(title=title).exists(),
         }
         return Response(data, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, pk=None):
+        tag = get_object_or_404(self.queryset, pk=pk)
+        access = UserAccess(request.user)
+        if access.can_view(tag.project):
+            serializer = self.serializer_class(tag)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
