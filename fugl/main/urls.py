@@ -1,7 +1,3 @@
-from django.conf.urls import url
-from django.contrib.auth.views import login as login_view
-from django.contrib.auth.views import logout_then_login as logout_view
-
 from rest_framework import routers
 
 from .api import CategoryViewSet
@@ -11,6 +7,7 @@ from .api import PostViewSet
 from .api import ProjectPluginViewSet
 from .api import ProjectViewSet
 from .api import TagViewSet
+from .api import ThemeViewSet
 from .api import UserViewSet
 
 
@@ -23,4 +20,5 @@ router.register(r'categories', CategoryViewSet)
 router.register(r'tags', TagViewSet)
 router.register(r'project_plugins', ProjectPluginViewSet)
 router.register(r'page_plugins', PagePluginViewSet)
+router.register(r'themes', ThemeViewSet)
 urlpatterns = router.urls
