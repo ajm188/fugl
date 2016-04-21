@@ -437,3 +437,84 @@ class UpdateProjectPluginTestCase(FuglViewTestCase):
         resp = self.client.put(url, data=json.dumps({}),
             content_type='application/json')
         self.assertEqual(resp.status_code, 404)
+
+
+class DeleteProjectPluginTestCase(FuglViewTestCase):
+
+    _url = '/project_plugins/{pk}/'
+
+    def setUp(self):
+        super().setUp()
+
+        self.project = self.create_project('project', 'descr',
+            owner=self.admin_user)
+
+        self.other_user = self.create_user('other')
+        self.other_project = self.create_project('other', 'descr',
+            owner=self.other_user)
+
+        self.login(user=self.admin_user)
+
+    def tearDown(self):
+        self.other_project.delete()
+        self.other_user.delete()
+        self.project.delete()
+
+        super().tearDown()
+
+    def test_delete(self):
+        plug = self.create_project_plugin('plug', project=self.project)
+        count = self.project.projectplugin_set.count()
+        url = self._url.format(pk=plug.id)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 204)
+        self.assertEqual(self.project.projectplugin_set.count(), count - 1)
+
+    def test_with_edit_access(self):
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=True)
+
+        plug = self.create_project_plugin('plug', project=self.other_project)
+        count = self.other_project.projectplugin_set.count()
+        url = self._url.format(pk=plug.id)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 204)
+        self.assertEqual(
+            self.other_project.projectplugin_set.count(),
+            count - 1,
+        )
+
+        access.delete()
+
+    def test_with_view_access(self):
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=False)
+
+        plug = self.create_project_plugin('plug', project=self.other_project)
+        count = self.other_project.projectplugin_set.count()
+        url = self._url.format(pk=plug.id)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(self.other_project.projectplugin_set.count(), count)
+
+        access.delete()
+        plug.delete()
+
+    def test_with_no_access(self):
+        plug = self.create_project_plugin('plug', project=self.other_project)
+        count = self.other_project.projectplugin_set.count()
+        url = self._url.format(pk=plug.id)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(self.other_project.projectplugin_set.count(), count)
+
+        plug.delete()
+
+    def test_non_existent(self):
+        url = self._url.format(pk=-1)
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 404)

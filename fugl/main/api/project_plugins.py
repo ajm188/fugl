@@ -74,4 +74,8 @@ class ProjectPluginViewSet(viewsets.GenericViewSet):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     def delete(self, request, pk=None):
-        pass
+        plugin = get_object_or_404(self.queryset, pk=pk)
+        if UserAccess(request.user).can_edit(plugin.project):
+            plugin.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_404_NOT_FOUND)
