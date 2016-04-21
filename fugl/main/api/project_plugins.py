@@ -32,7 +32,22 @@ class ProjectPluginViewSet(viewsets.GenericViewSet):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     def create(self, request):
-        pass
+        if 'project' not in request.data:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        proj_id = request.data['project']
+        project = get_object_or_404(self.project_queryset, pk=proj_id)
+
+        if UserAccess(request.user).can_edit(project):
+            serializer = self.serializer_class(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data,
+                    status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors,
+                    status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def retrieve(self, request, pk=None):
         pass
