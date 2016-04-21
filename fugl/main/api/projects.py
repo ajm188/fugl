@@ -10,6 +10,7 @@ from rest_framework.response import Response
 
 from main.models import Project
 from main.models import ProjectAccess
+from main.models import User
 from main.serializers import ProjectAccessSerializer
 from main.serializers import ProjectDetailSerializer
 from main.serializers import ProjectPermissionSerializer
@@ -21,6 +22,7 @@ from main.util import UserAccess
 class ProjectViewSet(viewsets.GenericViewSet):
 
     queryset = Project.objects.all()
+    user_queryset = User.objects.all()
     serializer_class = ProjectPermissionSerializer
     retrieve_serializer_class = ProjectDetailSerializer
     permission_classes = (IsAuthenticated,)
@@ -66,6 +68,24 @@ class ProjectViewSet(viewsets.GenericViewSet):
             context={'user': user},
         )
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @list_route(methods=['get'])
+    def lookup(self, request):
+        if request.method != 'GET':
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        params = request.query_params
+        if 'username' not in params or 'title' not in params:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        user = get_object_or_404(self.user_queryset,
+            username=params['username'])
+        project = get_object_or_404(self.queryset, title=params['title'])
+        if UserAccess(request.user).can_view(project):
+            serializer = self.retrieve_serializer_class(project)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     @list_route(methods=['get'])
     def available(self, request):
