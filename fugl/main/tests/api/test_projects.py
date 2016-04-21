@@ -492,3 +492,58 @@ class CloneProjectTestCase(FuglViewTestCase):
         self.assertEqual(resp.status_code, 404)
 
         self.assertEqual(self.admin_user.project_set.count(), count)
+
+
+class AvailableProjectTestCase(FuglViewTestCase):
+
+    url = '/projects/available/'
+
+    def setUp(self):
+        super().setUp()
+
+        self.project = self.create_project('project1', '',
+            owner=self.admin_user)
+        self.other_user = self.create_user('other-user')
+        self.other_project = self.create_project('other_project', '',
+            owner=self.other_user)
+
+        self.login(user=self.admin_user)
+
+    def tearDown(self):
+        self.project.delete()
+        self.other_project.delete()
+        self.other_user.delete()
+
+        super().tearDown()
+
+    def test_available_for_available(self):
+        data = {'title': self.project.title + 'blah'}
+
+        resp = self.client.get(self.url, data)
+        self.assertEqual(resp.status_code, 200)
+
+        self.assertIn('available', resp.data)
+        self.assertTrue(resp.data['available'])
+
+    def test_available_for_taken(self):
+        data = {'title': self.project.title}
+
+        resp = self.client.get(self.url, data)
+        self.assertEqual(resp.status_code, 200)
+
+        self.assertFalse(resp.data['available'])
+
+    def test_available_bad_data(self):
+        resp = self.client.get(self.url)
+        self.assertEqual(resp.status_code, 400)
+
+    def test_available_wrong_method(self):
+        resp = self.client.post(self.url, data={})
+        self.assertEqual(resp.status_code, 405)
+
+    def test_available_does_not_check_other_users_projects(self):
+        data = {'title': self.other_project.title}
+
+        resp = self.client.get(self.url, data)
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(resp.data['available'])

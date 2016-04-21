@@ -55,6 +55,16 @@ class ProjectViewSet(viewsets.GenericViewSet):
         )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @list_route(methods=['get'])
+    def available(self, request):
+        user = request.user
+        if 'title' not in request.query_params:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        title = request.query_params['title']
+        available = not self.queryset.filter(owner=user, title=title).exists()
+        resp = {'available': available}
+        return Response(resp, status=status.HTTP_200_OK)
+
     def retrieve(self, request, pk=None):
         project = get_object_or_404(Project, pk=pk)
         if not UserAccess(request.user).can_view(project):
