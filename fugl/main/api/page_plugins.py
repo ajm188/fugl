@@ -72,3 +72,10 @@ class PagePluginViewSet(viewsets.GenericViewSet):
                     status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, pk=None):
+        plugin = get_object_or_404(self.queryset, pk=pk)
+        if UserAccess(request.user).can_edit(plugin.project):
+            plugin.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_404_NOT_FOUND)
