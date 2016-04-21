@@ -16,6 +16,9 @@ class ProjectSerializer(serializers.ModelSerializer):
             'owner',
             'theme',
         ]
+        extra_kwargs = {
+            'preview_url': {'allow_blank': True},
+        }
 
 class ProjectPermissionSerializer(ProjectSerializer):
 
