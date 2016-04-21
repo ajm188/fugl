@@ -196,3 +196,87 @@ class CreateProjectPluginTestCase(FuglViewTestCase):
 
         resp = self.client.post(self.url, data=data)
         self.assertEqual(resp.status_code, 404)
+
+
+class RetrieveProjectPluginTestCase(FuglViewTestCase):
+
+    _url = '/project_plugins/{pk}/'
+
+    def setUp(self):
+        super().setUp()
+
+        self.project = self.create_project('project', 'descr',
+            owner=self.admin_user)
+        self.plug1 = self.create_project_plugin('plug1', project=self.project)
+        self.plug2 = self.create_project_plugin('plug2', project=self.project)
+
+        self.other_user = self.create_user('other')
+        self.other_project = self.create_project('other', 'descr',
+            owner=self.other_user)
+        self.plug3 = self.create_project_plugin('plug3',
+            project=self.other_project)
+
+        self.login(user=self.admin_user)
+
+    def tearDown(self):
+        self.other_project.delete()
+        self.other_user.delete()
+        self.plug1.delete()
+        self.plug2.delete()
+        self.plug3.delete()
+        self.project.delete()
+
+        super().tearDown()
+
+    def test_retrieve(self):
+        plug = self.plug1
+        url = self._url.format(pk=plug.id)
+
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+        data = resp.data
+        self.assertEqual(resp.data['title'], plug.title)
+        self.assertNotEqual(resp.data['title'], self.plug2.title)
+
+    def test_with_edit_access(self):
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=True)
+
+        plug = self.plug3
+        url = self._url.format(pk=plug.id)
+
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+        data = resp.data
+        self.assertEqual(data['title'], plug.title)
+
+        access.delete()
+
+    def test_with_view_access(self):
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=False)
+
+        plug = self.plug3
+        url = self._url.format(pk=plug.id)
+
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+        data = resp.data
+        self.assertEqual(data['title'], plug.title)
+
+        access.delete()
+
+    def test_with_no_access(self):
+        plug = self.plug3
+        url = self._url.format(pk=plug.id)
+
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 404)
+
+    def test_non_existent(self):
+        url = self._url.format(pk=-1)
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 404)

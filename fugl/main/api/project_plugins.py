@@ -50,7 +50,12 @@ class ProjectPluginViewSet(viewsets.GenericViewSet):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
     def retrieve(self, request, pk=None):
-        pass
+        plugin = get_object_or_404(self.queryset, pk=pk)
+        if UserAccess(request.user).can_view(plugin.project):
+            serializer = self.serializer_class(plugin)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def update(self, request, pk=None):
         pass
