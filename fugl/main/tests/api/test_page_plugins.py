@@ -1,3 +1,5 @@
+import json
+
 from ..base import FuglViewTestCase
 
 
@@ -285,4 +287,159 @@ class RetrievePagePluginTestCase(FuglViewTestCase):
     def test_non_existent(self):
         url = self._url.format(pk=-1)
         resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 404)
+
+
+class UpdatePagePluginTestCase(FuglViewTestCase):
+
+    _url = '/page_plugins/{pk}/'
+
+    def setUp(self):
+        super().setUp()
+
+        self.project = self.create_project('project', 'descr',
+            owner=self.admin_user)
+        self.plug1 = self.create_page_plugin('plug1', project=self.project)
+        self.plug2 = self.create_page_plugin('plug2', project=self.project)
+
+        self.other_user = self.create_user('other')
+        self.other_project = self.create_project('other', 'descr',
+            owner=self.other_user)
+        self.plug3 = self.create_page_plugin('plug3',
+            project=self.other_project)
+
+        self.login(user=self.admin_user)
+
+    def tearDown(self):
+        self.other_project.delete()
+        self.other_user.delete()
+        self.plug1.delete()
+        self.plug2.delete()
+        self.plug3.delete()
+        self.project.delete()
+
+        super().tearDown()
+
+    def test_update(self):
+        plug = self.plug1
+        url = self._url.format(pk=plug.id)
+
+        old_title = plug.title
+        data = {'title': 'new-title'}
+
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 200)
+
+        data = resp.data
+        self.assertEqual(resp.data['title'], 'new-title')
+
+        plug.refresh_from_db()
+        self.assertEqual(plug.title, data['title'])
+        plug.title = old_title
+        plug.save()
+
+    def test_update_bad_data(self):
+        plug = self.plug1
+        url = self._url.format(pk=plug.id)
+
+        data = {'title': ''}
+
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 400)
+
+        data = resp.data
+        self.assertIn('title', data)
+        plug.refresh_from_db()
+        self.assertNotEqual(plug.title, '')
+
+    def test_update_duplicate_title(self):
+        plug = self.plug1
+        url = self._url.format(pk=plug.id)
+
+        old_title = plug.title
+        data = {'title': 'plug2'}
+
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 400)
+
+        data = resp.data
+        self.assertIn('non_field_errors', data)
+        plug.refresh_from_db()
+        self.assertNotEqual(plug.title, 'plug2')
+
+    def test_update_change_project(self):
+        plug = self.plug1
+        url = self._url.format(pk=plug.id)
+
+        old_title = plug.title
+        data = {'project': self.other_project.id}
+
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 200)
+
+        data = resp.data
+        plug.refresh_from_db()
+        self.assertNotEqual(plug.project, self.other_project)
+
+    def test_with_edit_access(self):
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=True)
+
+        plug = self.plug3
+        old_title = plug.title
+        url = self._url.format(pk=plug.id)
+        data = {'title': 'new-title'}
+
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 200)
+
+        data = resp.data
+        self.assertEqual(data['title'], 'new-title')
+        plug.refresh_from_db()
+        self.assertEqual(plug.title, data['title'])
+
+        plug.title = old_title
+        plug.save()
+
+        access.delete()
+
+    def test_with_view_access(self):
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=False)
+
+        plug = self.plug3
+        url = self._url.format(pk=plug.id)
+        data = {'title': 'new-title'}
+
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 404)
+
+        plug.refresh_from_db()
+        self.assertNotEqual(plug.title, 'new-title')
+
+        access.delete()
+
+    def test_with_no_access(self):
+        plug = self.plug3
+        old_title = plug.title
+        url = self._url.format(pk=plug.id)
+        data = {'title': 'new-title'}
+
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 404)
+
+        plug.refresh_from_db()
+        self.assertNotEqual(plug.title, 'new-title')
+
+    def test_non_existent(self):
+        url = self._url.format(pk=-1)
+        resp = self.client.put(url, data=json.dumps({}),
+            content_type='application/json')
         self.assertEqual(resp.status_code, 404)
