@@ -687,3 +687,72 @@ class CreateProjectTestCase(FuglViewTestCase):
         self.assertTrue(project_set.exists())
         self.assertEqual(self.admin_user.project_set.count(), count + 1)
         [p.delete() for p in project_set.all()]
+
+
+class LookupProjectTestCase(FuglViewTestCase):
+
+    url = '/projects/lookup/'
+
+    def setUp(self):
+        super().setUp()
+        self.project = self.create_project('owned', 'descr',
+            owner=self.admin_user)
+
+        self.other_user = self.create_user('other')
+
+        self.other_project = self.create_project('other-proj', 'descr',
+            owner=self.other_user)
+
+        self.login(user=self.admin_user)
+
+    def tearDown(self):
+        super().tearDown()
+
+        self.other_project.delete()
+        self.other_user.delete()
+        self.project.delete()
+
+    def test_for_owned(self):
+        username = self.admin_user.username
+        data = {'username': username, 'title': 'owned'}
+
+        resp = self.client.get(self.url, data)
+        self.assertEqual(resp.status_code, 200)
+
+        data = resp.data
+        self.assertIn('page_set', data)  # plus all the usual stuff
+
+    def test_for_viewable(self):
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=False)
+        username = 'other'
+
+        data = {'username': username, 'title': 'other-proj'}
+        resp = self.client.get(self.url, data)
+        self.assertEqual(resp.status_code, 200)
+        access.delete()
+
+    def test_for_unviewable(self):
+        username = 'other'
+
+        data = {'username': username, 'title': 'other-proj'}
+        resp = self.client.get(self.url, data)
+        self.assertEqual(resp.status_code, 404)
+
+    def test_for_nonexistent_project(self):
+        username = 'other'
+
+        data = {'username': username, 'title': 'not-my-project'}
+        resp = self.client.get(self.url, data)
+        self.assertEqual(resp.status_code, 404)
+
+    def test_for_nonexistent_user(self):
+        username = 'nobody'
+
+        data = {'username': username, 'title': ''}
+        resp = self.client.get(self.url, data)
+        self.assertEqual(resp.status_code, 404)
+
+    def test_bad_method(self):
+        resp = self.client.post(self.url)
+        self.assertEqual(resp.status_code, 405)
