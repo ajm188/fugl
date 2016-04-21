@@ -97,22 +97,6 @@ class ProjectViewSetTestCase(FuglViewTestCase):
             else:
                 self.assertEqual(project['can_edit'], True)
 
-    def test_project_detail_for_owned(self):
-        resp = self.client.get(self.detail_url.format(self.owned_project.id))
-        self.assertEqual(resp.status_code, 200)
-
-    def test_project_detail_for_viewable(self):
-        resp = self.client.get(self.detail_url.format(self.view_project.id))
-        self.assertEqual(resp.status_code, 200)
-
-    def test_project_detail_for_unviewable(self):
-        resp = self.client.get(self.detail_url.format(self.other_project.id))
-        self.assertEqual(resp.status_code, 404)
-
-    def test_project_detail_for_nonexistent(self):
-        resp = self.client.get(self.detail_url.format(-1))
-        self.assertEqual(resp.status_code, 404)
-
     def test_project_update_for_owned(self):
         old_title = self.owned_project.title
 
@@ -348,6 +332,78 @@ class ProjectViewSetTestCase(FuglViewTestCase):
         path = self.detail_url.format(-1)
         resp = self.client.delete(path, data=data)
         self.assertEqual(resp.status_code, 404)
+
+
+class RetrieveProjectTestCase(FuglViewTestCase):
+
+    url = '/projects/{pk}/'
+
+    def setUp(self):
+        super().setUp()
+        self.project = self.create_project('owned', 'descr',
+            owner=self.admin_user)
+
+        self.other_user = self.create_user('other')
+
+        self.other_project = self.create_project('other-proj', 'descr',
+            owner=self.other_user)
+
+        self.login(user=self.admin_user)
+
+    def tearDown(self):
+        super().tearDown()
+
+        self.other_project.delete()
+        self.other_user.delete()
+        self.project.delete()
+
+    def test_for_owned(self):
+        url = self.url.format(pk=self.project.id)
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_for_viewable(self):
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=False)
+        url = self.url.format(pk=self.other_project.id)
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+        access.delete()
+
+    def test_for_unviewable(self):
+        url = self.url.format(pk=self.other_project.id)
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 404)
+
+    def test_for_nonexistent(self):
+        url = self.url.format(pk=-1)
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 404)
+
+    def test_retrieve_has_items(self):
+        page1 = self.create_page('title1', content='content',
+            project=self.project)
+        page2 = self.create_page('title2', content='content',
+            project=self.project)
+
+        post1 = self.create_post('title1', content='content',
+            project=self.project)
+
+        url = self.url.format(pk=self.project.id)
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+        data = resp.data
+        self.assertIn('page_set', data)
+        self.assertIn('post_set', data)
+        self.assertIn('category_set', data)
+        self.assertIn('tag_set', data)
+
+        self.assertEqual(len(data['page_set']), self.project.page_set.count())
+        self.assertEqual(len(data['post_set']), self.project.post_set.count())
+
+        [page.delete() for page in self.project.page_set.all()]
+        [post.delete() for post in self.project.post_set.all()]
 
 
 class CloneProjectTestCase(FuglViewTestCase):
