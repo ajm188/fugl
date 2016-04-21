@@ -11,6 +11,7 @@ from main.models import Page
 from main.models import Post
 from main.models import Project
 from main.models import ProjectAccess
+from main.models import ProjectPlugin
 from main.models import Tag
 from main.models import Theme
 from main.models import User
@@ -93,6 +94,10 @@ class FuglTestCase(TestCase):
             ('title', title), ('filepath', filepath), ('body_markup', markup),
             **kwargs
         )
+
+    def create_project_plugin(self, title, **kwargs):
+        kwargs['markup'] = kwargs.get('markup', 'markup')
+        return self._create_object(ProjectPlugin, ('title', title), **kwargs)
 
 
 class FuglViewTestCase(FuglTestCase):
