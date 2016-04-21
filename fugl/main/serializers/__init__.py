@@ -5,5 +5,6 @@ from .project import ProjectDetailSerializer
 from .project import ProjectPermissionSerializer
 from .project import ProjectSerializer
 from .project_access import ProjectAccessSerializer
+from .project_plugin import ProjectPluginSerializer
 from .tag import TagSerializer
 from .user import UserSerializer
