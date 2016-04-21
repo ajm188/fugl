@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from main.models import Project
 from main.models import ProjectAccess
 from main.serializers import ProjectAccessSerializer
+from main.serializers import ProjectDetailSerializer
 from main.serializers import ProjectPermissionSerializer
 from main.serializers import ProjectSerializer
 from main.serializers import UserSerializer
@@ -21,6 +22,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
 
     queryset = Project.objects.all()
     serializer_class = ProjectPermissionSerializer
+    retrieve_serializer_class = ProjectDetailSerializer
     permission_classes = (IsAuthenticated,)
 
     def list(self, request):
@@ -60,7 +62,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         if not UserAccess(request.user).can_view(project):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        serializer = self.serializer_class(project)
+        serializer = self.retrieve_serializer_class(project)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def update(self, request, pk=None):

@@ -32,3 +32,11 @@ class ProjectPermissionSerializer(ProjectSerializer):
             pass
 
         return d
+
+
+class ProjectDetailSerializer(ProjectSerializer):
+
+    class Meta(ProjectSerializer.Meta):
+        fields = ProjectSerializer.Meta.fields + [
+            'post_set', 'page_set', 'category_set', 'tag_set',
+        ]

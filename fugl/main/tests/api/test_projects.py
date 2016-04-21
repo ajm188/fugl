@@ -380,6 +380,31 @@ class RetrieveProjectTestCase(FuglViewTestCase):
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 404)
 
+    def test_retrieve_has_items(self):
+        page1 = self.create_page('title1', content='content',
+            project=self.project)
+        page2 = self.create_page('title2', content='content',
+            project=self.project)
+
+        post1 = self.create_post('title1', content='content',
+            project=self.project)
+
+        url = self.url.format(pk=self.project.id)
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+
+        data = resp.data
+        self.assertIn('page_set', data)
+        self.assertIn('post_set', data)
+        self.assertIn('category_set', data)
+        self.assertIn('tag_set', data)
+
+        self.assertEqual(len(data['page_set']), self.project.page_set.count())
+        self.assertEqual(len(data['post_set']), self.project.post_set.count())
+
+        [page.delete() for page in self.project.page_set.all()]
+        [post.delete() for post in self.project.post_set.all()]
+
 
 class CloneProjectTestCase(FuglViewTestCase):
 
