@@ -24,3 +24,8 @@ class ThemeViewSet(viewsets.GenericViewSet):
         else:
             return Response(serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, pk=None):
+        theme = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(theme)
+        return Response(serializer.data, status=status.HTTP_200_OK)

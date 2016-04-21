@@ -73,3 +73,38 @@ class CreateThemeTestCase(FuglViewTestCase):
         self.assertIn('body_markup', resp.data)
         self.assertIn('title', resp.data)
         self.assertEqual(Theme.objects.count(), count)
+
+
+class RetrieveThemeTestCase(FuglViewTestCase):
+
+    _url = '/themes/{pk}/'
+
+    def setUp(self):
+        super().setUp()
+
+        self.theme = self.create_theme('test-theme', 'my markup')
+        self.url = self._url.format(pk=self.theme.id)
+
+        self.login(user=self.admin_user)
+
+    def tearDown(self):
+        self.theme.delete()
+
+        super().tearDown()
+
+    def test_retrieve(self):
+        resp = self.client.get(self.url)
+        self.assertEqual(resp.status_code, 200)
+
+        data = resp.data
+        self.assertIn('title', data)
+        self.assertIn('body_markup', data)
+        self.assertIn('creator', data)
+        self.assertIn('filepath', data)
+
+        self.assertEqual(data['title'], 'test-theme')
+        self.assertEqual(data['body_markup'], 'my markup')
+
+    def test_nonexistent(self):
+        resp = self.client.get(self._url.format(pk=-1))
+        self.assertEqual(resp.status_code, 404)
