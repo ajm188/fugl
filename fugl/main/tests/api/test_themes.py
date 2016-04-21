@@ -179,3 +179,40 @@ class UpdateThemeTestCase(FuglViewTestCase):
 
         self.other_theme.refresh_from_db()
         self.assertEqual(self.other_theme.title, 'other-theme')
+
+
+class DeleteThemeTestCase(FuglViewTestCase):
+
+    _url = '/themes/{pk}/'
+
+    def setUp(self):
+        super().setUp()
+
+        self.theme = self.create_theme('my-theme', 'my markup')
+        self.other_user = self.create_user('other')
+        self.other_theme = self.create_theme('other-theme', 'other markup',
+            creator=self.other_user)
+
+        self.login(user=self.admin_user)
+
+    def test_delete_success(self):
+        themes = Theme.objectscount()
+        url = self._url.format(pk=self.theme.id)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 204)
+        self.assertEqual(Theme.objects.count(), themes - 1)
+
+    def test_nonexistent(self):
+        url = self._url.format(pk=-1)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 404)
+
+    def test_with_unowned_theme(self):
+        themes = Theme.objects.count()
+        url = self._url.format(pk=self.other_theme.id)
+
+        resp = self.client.delete(url)
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(Theme.objects.count(), themes)

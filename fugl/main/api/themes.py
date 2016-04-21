@@ -43,3 +43,11 @@ class ThemeViewSet(viewsets.GenericViewSet):
                     status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, pk=None):
+        theme = get_object_or_404(self.queryset, pk=pk)
+        if theme.creator == request.user:
+            theme.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
