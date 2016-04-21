@@ -1,3 +1,5 @@
+import json
+
 from main.models import Theme
 
 from ..base import FuglViewTestCase
@@ -108,3 +110,72 @@ class RetrieveThemeTestCase(FuglViewTestCase):
     def test_nonexistent(self):
         resp = self.client.get(self._url.format(pk=-1))
         self.assertEqual(resp.status_code, 404)
+
+
+class UpdateThemeTestCase(FuglViewTestCase):
+
+    _url = '/themes/{pk}/'
+
+    def setUp(self):
+        super().setUp()
+
+        self.theme = self.create_theme('my-theme', 'my markup')
+        self.other_user = self.create_user('other')
+        self.other_theme = self.create_theme('other-theme', 'other markup',
+            creator=self.other_user)
+
+        self.login(user=self.admin_user)
+
+    def tearDown(self):
+        self.theme.delete()
+        self.other_theme.delete()
+        self.other_user.delete()
+
+        super().tearDown()
+
+    def test_update_success(self):
+        url = self._url.format(pk=self.theme.id)
+
+        data = {'title': 'new-title'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 200)
+
+        data = resp.data
+        self.assertEqual(data.get('title'), 'new-title')
+        self.theme.refresh_from_db()
+        self.assertEqual(self.theme.title, 'new-title')
+
+        # undo the update
+        self.theme.title = 'my-theme'
+        self.theme.save()
+
+    def test_bad_data(self):
+        url = self._url.format(pk=self.theme.id)
+
+        data = {'title': ''}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 400)
+
+        self.assertIn('title', resp.data)
+        self.assertEqual(self.theme.title, 'my-theme')
+
+    def test_nonexistent(self):
+        url = self._url.format(pk=-1)
+
+        data = {'title': 'new-title'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 404)
+
+    def test_with_unowned_theme(self):
+        url = self._url.format(pk=self.other_theme.id)
+
+        data = {'title': 'blargh'}
+        resp = self.client.put(url, data=json.dumps(data),
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 404)
+
+        self.other_theme.refresh_from_db()
+        self.assertEqual(self.other_theme.title, 'other-theme')

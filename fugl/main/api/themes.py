@@ -29,3 +29,17 @@ class ThemeViewSet(viewsets.GenericViewSet):
         theme = get_object_or_404(self.queryset, pk=pk)
         serializer = self.serializer_class(theme)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def update(self, request, pk=None):
+        theme = get_object_or_404(self.queryset, pk=pk)
+        if theme.creator == request.user:
+            serializer = self.serializer_class(theme, data=request.data,
+                partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors,
+                    status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
