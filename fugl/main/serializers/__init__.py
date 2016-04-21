@@ -1,5 +1,6 @@
 from .category import CategorySerializer
 from .page import PageSerializer
+from .page_plugin import PagePluginSerializer
 from .post import PostSerializer
 from .project import ProjectDetailSerializer
 from .project import ProjectPermissionSerializer

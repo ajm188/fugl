@@ -8,6 +8,7 @@ from django.utils import timezone
 
 from main.models import Category
 from main.models import Page
+from main.models import PagePlugin
 from main.models import Post
 from main.models import Project
 from main.models import ProjectAccess
@@ -98,6 +99,11 @@ class FuglTestCase(TestCase):
     def create_project_plugin(self, title, **kwargs):
         kwargs['markup'] = kwargs.get('markup', 'markup')
         return self._create_object(ProjectPlugin, ('title', title), **kwargs)
+
+    def create_page_plugin(self, title, **kwargs):
+        kwargs['head_markup'] = kwargs.get('head_markup', 'head_markup')
+        kwargs['body_markup'] = kwargs.get('body_markup', 'body_markup')
+        return self._create_object(PagePlugin, ('title', title), **kwargs)
 
 
 class FuglViewTestCase(FuglTestCase):
