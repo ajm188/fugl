@@ -40,7 +40,7 @@ User-friendly static site generation as a service. Powered by [Pelican](http://b
 # Development
 
 - To populate the database:
-  - The basics (**you must do this**) `python manage.py populate`
+  - The basics (**you must do this**) `python manage.py populate ../themes/`
   - Taylor swift user/project (good for demo) `python manage.py tswizzle`
 - To launch the test server: `make run`
 - To run tests: `make test`
