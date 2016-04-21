@@ -33,6 +33,16 @@ class ProjectViewSet(viewsets.GenericViewSet):
         )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def create(self, request):
+        request.data['owner'] = request.user.id
+        serializer = ProjectSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST)
+
     @list_route()
     def owned(self, request):
         user = request.user

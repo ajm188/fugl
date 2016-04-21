@@ -547,3 +547,87 @@ class AvailableProjectTestCase(FuglViewTestCase):
         resp = self.client.get(self.url, data)
         self.assertEqual(resp.status_code, 200)
         self.assertTrue(resp.data['available'])
+
+
+class CreateProjectTestCase(FuglViewTestCase):
+
+    url = '/projects/'
+
+    def setUp(self):
+        super().setUp()
+
+        self.project = self.create_project('project1', '',
+            owner=self.admin_user)
+        self.other_user = self.create_user('other-user')
+        self.other_project = self.create_project('other_project', '',
+            owner=self.other_user)
+
+        self.login(user=self.admin_user)
+
+    def tearDown(self):
+        super().tearDown()
+
+        self.project.delete()
+        self.other_project.delete()
+        self.other_user.delete()
+
+    def test_create_success(self):
+        count = self.admin_user.project_set.count()
+        data = {
+            'title': self.project.title + 'blah',
+            'description': 'something',
+            'theme': self.default_theme.id,
+            'preview_url': '',
+        }
+
+        resp = self.client.post(self.url, data=data)
+        self.assertEqual(resp.status_code, 201)
+
+        data = resp.data
+        new_title = self.project.title + 'blah'
+        self.assertEqual(data.get('title', None), new_title)
+        self.assertEqual(data.get('description', None), 'something')
+
+        project_set = self.admin_user.project_set.filter(title=new_title)
+        self.assertTrue(project_set.exists())
+        self.assertEqual(self.admin_user.project_set.count(), count + 1)
+        [p.delete() for p in project_set.all()]
+
+    def test_create_duplicate(self):
+        count = self.admin_user.project_set.count()
+        data = {
+            'title': self.project.title,
+            'description': 'something',
+            'theme': self.default_theme.id,
+            'preview_url': '',
+        }
+
+        resp = self.client.post(self.url, data=data)
+        self.assertEqual(resp.status_code, 400)
+
+        data = resp.data
+        self.assertIn('non_field_errors', data)
+        self.assertNotIn('description', data)
+        self.assertEqual(self.admin_user.project_set.count(), count)
+
+    def test_create_duplicate_of_other_users_project_succeeds(self):
+        count = self.admin_user.project_set.count()
+        data = {
+            'title': self.other_project.title,
+            'description': 'something',
+            'theme': self.default_theme.id,
+            'preview_url': '',
+        }
+
+        resp = self.client.post(self.url, data=data)
+        self.assertEqual(resp.status_code, 201)
+
+        data = resp.data
+        new_title = self.other_project.title
+        self.assertEqual(data.get('title', None), new_title)
+        self.assertEqual(data.get('description', None), 'something')
+
+        project_set = self.admin_user.project_set.filter(title=new_title)
+        self.assertTrue(project_set.exists())
+        self.assertEqual(self.admin_user.project_set.count(), count + 1)
+        [p.delete() for p in project_set.all()]
