@@ -8,7 +8,7 @@
     
     
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for main/api/project_plugins.py: 100%</title>
+    <title>Coverage for main/api/page_plugins.py: 100%</title>
     <link rel="stylesheet" href="style.css" type="text/css">
     
     <script type="text/javascript" src="jquery.min.js"></script>
@@ -23,7 +23,7 @@
 
 <div id="header">
     <div class="content">
-        <h1>Coverage for <b>main/api/project_plugins.py</b> :
+        <h1>Coverage for <b>main/api/page_plugins.py</b> :
             <span class="pc_cov">100%</span>
         </h1>
 
@@ -158,17 +158,17 @@
 <p id="t5" class="stm run hide_run"><span class="key">from</span> <span class="nam">rest_framework</span><span class="op">.</span><span class="nam">permissions</span> <span class="key">import</span> <span class="nam">IsAuthenticated</span><span class="strut">&nbsp;</span></p>
 <p id="t6" class="stm run hide_run"><span class="key">from</span> <span class="nam">rest_framework</span><span class="op">.</span><span class="nam">response</span> <span class="key">import</span> <span class="nam">Response</span><span class="strut">&nbsp;</span></p>
 <p id="t7" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t8" class="stm run hide_run"><span class="key">from</span> <span class="nam">main</span><span class="op">.</span><span class="nam">models</span> <span class="key">import</span> <span class="nam">Project</span><span class="strut">&nbsp;</span></p>
-<p id="t9" class="stm run hide_run"><span class="key">from</span> <span class="nam">main</span><span class="op">.</span><span class="nam">models</span> <span class="key">import</span> <span class="nam">ProjectPlugin</span><span class="strut">&nbsp;</span></p>
-<p id="t10" class="stm run hide_run"><span class="key">from</span> <span class="nam">main</span><span class="op">.</span><span class="nam">serializers</span> <span class="key">import</span> <span class="nam">ProjectPluginSerializer</span><span class="strut">&nbsp;</span></p>
+<p id="t8" class="stm run hide_run"><span class="key">from</span> <span class="nam">main</span><span class="op">.</span><span class="nam">models</span> <span class="key">import</span> <span class="nam">PagePlugin</span><span class="strut">&nbsp;</span></p>
+<p id="t9" class="stm run hide_run"><span class="key">from</span> <span class="nam">main</span><span class="op">.</span><span class="nam">models</span> <span class="key">import</span> <span class="nam">Project</span><span class="strut">&nbsp;</span></p>
+<p id="t10" class="stm run hide_run"><span class="key">from</span> <span class="nam">main</span><span class="op">.</span><span class="nam">serializers</span> <span class="key">import</span> <span class="nam">PagePluginSerializer</span><span class="strut">&nbsp;</span></p>
 <p id="t11" class="stm run hide_run"><span class="key">from</span> <span class="nam">main</span><span class="op">.</span><span class="nam">util</span> <span class="key">import</span> <span class="nam">UserAccess</span><span class="strut">&nbsp;</span></p>
 <p id="t12" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t13" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t14" class="stm run hide_run"><span class="key">class</span> <span class="nam">ProjectPluginViewSet</span><span class="op">(</span><span class="nam">viewsets</span><span class="op">.</span><span class="nam">GenericViewSet</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t14" class="stm run hide_run"><span class="key">class</span> <span class="nam">PagePluginViewSet</span><span class="op">(</span><span class="nam">viewsets</span><span class="op">.</span><span class="nam">GenericViewSet</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t15" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t16" class="stm run hide_run">&nbsp; &nbsp; <span class="nam">queryset</span> <span class="op">=</span> <span class="nam">ProjectPlugin</span><span class="op">.</span><span class="nam">objects</span><span class="op">.</span><span class="nam">all</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t16" class="stm run hide_run">&nbsp; &nbsp; <span class="nam">queryset</span> <span class="op">=</span> <span class="nam">PagePlugin</span><span class="op">.</span><span class="nam">objects</span><span class="op">.</span><span class="nam">all</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t17" class="stm run hide_run">&nbsp; &nbsp; <span class="nam">project_queryset</span> <span class="op">=</span> <span class="nam">Project</span><span class="op">.</span><span class="nam">objects</span><span class="op">.</span><span class="nam">all</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t18" class="stm run hide_run">&nbsp; &nbsp; <span class="nam">serializer_class</span> <span class="op">=</span> <span class="nam">ProjectPluginSerializer</span><span class="strut">&nbsp;</span></p>
+<p id="t18" class="stm run hide_run">&nbsp; &nbsp; <span class="nam">serializer_class</span> <span class="op">=</span> <span class="nam">PagePluginSerializer</span><span class="strut">&nbsp;</span></p>
 <p id="t19" class="stm run hide_run">&nbsp; &nbsp; <span class="nam">permission_classes</span> <span class="op">=</span> <span class="op">(</span><span class="nam">IsAuthenticated</span><span class="op">,</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t20" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t21" class="stm run hide_run">&nbsp; &nbsp; <span class="key">def</span> <span class="nam">list</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">request</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
