@@ -66,3 +66,20 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+    @list_route(methods=['delete'])
+    def logout(self, request):
+        if request.method != 'DELETE':
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+        auth.logout(request.user)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @list_route(methods=['get'])
+    def session(self, request):
+        """ Checks if a session is valid. """
+        if request.method != 'GET':
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+        data = {'valid': request.user.is_authenticated()}
+        return Response(data, status=status.HTTP_200_OK)
