@@ -196,7 +196,7 @@ class DeleteThemeTestCase(FuglViewTestCase):
         self.login(user=self.admin_user)
 
     def test_delete_success(self):
-        themes = Theme.objectscount()
+        themes = Theme.objects.count()
         url = self._url.format(pk=self.theme.id)
 
         resp = self.client.delete(url)

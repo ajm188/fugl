@@ -455,7 +455,7 @@ class CloneProjectTestCase(FuglViewTestCase):
             project=self.project)
         post = self.create_post('post', content='content',
             project=self.project)
-        theme = self.create_theme('my-theme', '/foo/bar', 'markup')
+        theme = self.create_theme('my-theme', 'markup')
         self.project.theme = theme
         self.project.save()
 
