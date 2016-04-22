@@ -9,6 +9,7 @@ addons:
 install:
   - pip install -r requirements.txt
   - pip install sphinx sphinx_rtd_theme
+  - pip install python-coveralls
 before_script:
   - psql -U postgres -c "CREATE ROLE fugl PASSWORD 'password' NOSUPERUSER CREATEDB NOCREATEROLE INHERIT LOGIN;"
   - echo "SECRET_KEY='test'" > fugl/fugl/credentials.py
@@ -16,6 +17,7 @@ before_script:
 script: cd fugl && coverage run --source=fugl,main --omit=\*/migrations/\*,\*/management/\*,fugl/wsgi.py manage.py test
 after_success:
   - pwd
+  - coveralls
   - coverage html -d ../htmlcov
   - cd .. && make -C doc html
   - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && ./push.sh || false'
