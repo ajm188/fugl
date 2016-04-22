@@ -8,4 +8,5 @@ from .project import ProjectSerializer
 from .project_access import ProjectAccessSerializer
 from .project_plugin import ProjectPluginSerializer
 from .tag import TagSerializer
+from .theme import ThemeSerializer
 from .user import UserSerializer

@@ -88,11 +88,12 @@ class FuglTestCase(TestCase):
     def create_tag(self, title, **kwargs):
         return self._create_object(Tag, ('title', title), **kwargs)
 
-    def create_theme(self, title, filepath, markup, **kwargs):
+    def create_theme(self, title, markup, **kwargs):
         kwargs['creator'] = kwargs.get('creator', self.admin_user)
+        kwargs['filepath'] = kwargs.get('filepath', '')
         return self._create_object(
             Theme,
-            ('title', title), ('filepath', filepath), ('body_markup', markup),
+            ('title', title), ('body_markup', markup),
             **kwargs
         )
 
