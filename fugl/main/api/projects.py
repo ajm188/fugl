@@ -16,6 +16,7 @@ from main.serializers import ProjectDetailSerializer
 from main.serializers import ProjectPermissionSerializer
 from main.serializers import ProjectSerializer
 from main.serializers import UserSerializer
+from main.util import SiteGenerator
 from main.util import UserAccess
 
 
