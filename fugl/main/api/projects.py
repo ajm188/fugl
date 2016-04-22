@@ -1,4 +1,5 @@
 from django import db
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from rest_framework import status
@@ -177,12 +178,17 @@ class ProjectViewSet(viewsets.GenericViewSet):
                 'Content-Length': site.content_length(),
             }
             content_type = 'application/zip'
-            return Response(
+            # have to use vanilla django response here because rest_framework
+            # will try to JSON serialize the zip
+            resp = HttpResponse(
                 site.archive,
                 status=status.HTTP_201_CREATED,
-                headers=headers,
                 content_type=content_type,
             )
+            # set the headers
+            for k, v in headers.items():
+                resp[k] = v
+            return resp
         except RuntimeError as e:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
