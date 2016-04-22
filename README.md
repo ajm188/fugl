@@ -1,4 +1,4 @@
-# Fugl ![Build Status](https://travis-ci.org/ajm188/fugl.svg?branch=master)
+# Fugl [![Build Status](https://travis-ci.org/ajm188/fugl.svg?branch=master)](https://travis-ci.org/ajm188/fugl) [![Coverage Status](https://coveralls.io/repos/github/ajm188/fugl/badge.svg?branch=master)](https://coveralls.io/github/ajm188/fugl?branch=master)
 
 User-friendly static site generation as a service. Powered by [Pelican](http://blog.getpelican.com/).
 
