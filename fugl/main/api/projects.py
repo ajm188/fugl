@@ -161,6 +161,30 @@ class ProjectViewSet(viewsets.GenericViewSet):
         serializer = self.serializer_class(cloned_project)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    @detail_route(methods=['get'])
+    def generate(self, request, pk=None):
+        if request.method != 'GET':
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+        project = get_object_or_404(self.queryset, pk=pk)
+
+        site_generator = SiteGenerator(project)
+        try:
+            site = site_generator.generate()
+            headers = {
+                'Content-Disposition': site.content_disposition_str(),
+                'Content-Length': site.content_length(),
+            }
+            content_type = 'application/zip'
+            return Response(
+                site.archive,
+                status=status.HTTP_201_CREATED,
+                headers=headers,
+                content_type=content_type,
+            )
+        except RuntimeError as e:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     @detail_route(methods=['get', 'post', 'put', 'patch', 'delete'])
     def access(self, request, pk=None):
         project = get_object_or_404(Project, pk=pk)
