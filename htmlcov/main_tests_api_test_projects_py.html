@@ -30,8 +30,8 @@
         <img id="keyboard_icon" src="keybd_closed.png" alt="Show keyboard shortcuts" />
 
         <h2 class="stats">
-            473 statements &nbsp;
-            <span class="run hide_run shortkey_r button_toggle_run">473 run</span>
+            488 statements &nbsp;
+            <span class="run hide_run shortkey_r button_toggle_run">488 run</span>
             <span class="mis shortkey_m button_toggle_mis">0 missing</span>
             <span class="exc shortkey_x button_toggle_exc">0 excluded</span>
 
@@ -825,6 +825,30 @@
 <p id="n756" class="stm run hide_run"><a href="#n756">756</a></p>
 <p id="n757" class="stm run hide_run"><a href="#n757">757</a></p>
 <p id="n758" class="stm run hide_run"><a href="#n758">758</a></p>
+<p id="n759" class="pln"><a href="#n759">759</a></p>
+<p id="n760" class="pln"><a href="#n760">760</a></p>
+<p id="n761" class="stm run hide_run"><a href="#n761">761</a></p>
+<p id="n762" class="pln"><a href="#n762">762</a></p>
+<p id="n763" class="stm run hide_run"><a href="#n763">763</a></p>
+<p id="n764" class="pln"><a href="#n764">764</a></p>
+<p id="n765" class="stm run hide_run"><a href="#n765">765</a></p>
+<p id="n766" class="stm run hide_run"><a href="#n766">766</a></p>
+<p id="n767" class="pln"><a href="#n767">767</a></p>
+<p id="n768" class="stm run hide_run"><a href="#n768">768</a></p>
+<p id="n769" class="stm run hide_run"><a href="#n769">769</a></p>
+<p id="n770" class="pln"><a href="#n770">770</a></p>
+<p id="n771" class="stm run hide_run"><a href="#n771">771</a></p>
+<p id="n772" class="pln"><a href="#n772">772</a></p>
+<p id="n773" class="stm run hide_run"><a href="#n773">773</a></p>
+<p id="n774" class="stm run hide_run"><a href="#n774">774</a></p>
+<p id="n775" class="stm run hide_run"><a href="#n775">775</a></p>
+<p id="n776" class="pln"><a href="#n776">776</a></p>
+<p id="n777" class="stm run hide_run"><a href="#n777">777</a></p>
+<p id="n778" class="pln"><a href="#n778">778</a></p>
+<p id="n779" class="stm run hide_run"><a href="#n779">779</a></p>
+<p id="n780" class="stm run hide_run"><a href="#n780">780</a></p>
+<p id="n781" class="stm run hide_run"><a href="#n781">781</a></p>
+<p id="n782" class="stm run hide_run"><a href="#n782">782</a></p>
                 
             </td>
             <td class="text">
@@ -1586,6 +1610,30 @@
 <p id="t756" class="stm run hide_run">&nbsp; &nbsp; <span class="key">def</span> <span class="nam">test_bad_method</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t757" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">resp</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">client</span><span class="op">.</span><span class="nam">post</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">url</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t758" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">self</span><span class="op">.</span><span class="nam">assertEqual</span><span class="op">(</span><span class="nam">resp</span><span class="op">.</span><span class="nam">status_code</span><span class="op">,</span> <span class="num">405</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t759" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t760" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t761" class="stm run hide_run"><span class="key">class</span> <span class="nam">GenerateProjectTestCase</span><span class="op">(</span><span class="nam">FuglViewTestCase</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t762" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t763" class="stm run hide_run">&nbsp; &nbsp; <span class="nam">url</span> <span class="op">=</span> <span class="str">&#39;/projects/{pk}/generate/&#39;</span><span class="strut">&nbsp;</span></p>
+<p id="t764" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t765" class="stm run hide_run">&nbsp; &nbsp; <span class="key">def</span> <span class="nam">setUp</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t766" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">super</span><span class="op">(</span><span class="op">)</span><span class="op">.</span><span class="nam">setUp</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t767" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t768" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">self</span><span class="op">.</span><span class="nam">project</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">create_project</span><span class="op">(</span><span class="str">&#39;simple&#39;</span><span class="op">,</span> <span class="nam">owner</span><span class="op">=</span><span class="nam">self</span><span class="op">.</span><span class="nam">admin_user</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t769" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">self</span><span class="op">.</span><span class="nam">page</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">create_page</span><span class="op">(</span><span class="str">&#39;my-page&#39;</span><span class="op">,</span> <span class="nam">content</span><span class="op">=</span><span class="str">&#39;this is a page&#39;</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
+<p id="t770" class="pln">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">project</span><span class="op">=</span><span class="nam">self</span><span class="op">.</span><span class="nam">project</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t771" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">self</span><span class="op">.</span><span class="nam">login</span><span class="op">(</span><span class="nam">user</span><span class="op">=</span><span class="nam">self</span><span class="op">.</span><span class="nam">admin_user</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t772" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t773" class="stm run hide_run">&nbsp; &nbsp; <span class="key">def</span> <span class="nam">tearDown</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t774" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">self</span><span class="op">.</span><span class="nam">project</span><span class="op">.</span><span class="nam">delete</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t775" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">self</span><span class="op">.</span><span class="nam">page</span><span class="op">.</span><span class="nam">delete</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t776" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t777" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">super</span><span class="op">(</span><span class="op">)</span><span class="op">.</span><span class="nam">tearDown</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t778" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t779" class="stm run hide_run">&nbsp; &nbsp; <span class="key">def</span> <span class="nam">test_it_works</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t780" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">url</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">url</span><span class="op">.</span><span class="nam">format</span><span class="op">(</span><span class="nam">pk</span><span class="op">=</span><span class="nam">self</span><span class="op">.</span><span class="nam">project</span><span class="op">.</span><span class="nam">id</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t781" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">resp</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">client</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="nam">url</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t782" class="stm run hide_run">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">self</span><span class="op">.</span><span class="nam">assertEqual</span><span class="op">(</span><span class="nam">resp</span><span class="op">.</span><span class="nam">status_code</span><span class="op">,</span> <span class="num">201</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
                 
             </td>
         </tr>
@@ -1596,7 +1644,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.org">coverage.py v4.0.3</a>,
-            created at 2016-04-22 04:38
+            created at 2016-04-22 04:40
         </p>
     </div>
 </div>
