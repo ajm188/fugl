@@ -79,7 +79,8 @@ class ProjectViewSet(viewsets.GenericViewSet):
 
         user = get_object_or_404(self.user_queryset,
             username=params['username'])
-        project = get_object_or_404(self.queryset, title=params['title'])
+        user_projects = self.queryset.filter(owner=user)
+        project = get_object_or_404(user_projects, title=params['title'])
         if UserAccess(request.user).can_view(project):
             serializer = self.retrieve_serializer_class(project)
 
