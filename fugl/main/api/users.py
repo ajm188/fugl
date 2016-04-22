@@ -1,4 +1,5 @@
 from django.contrib import auth
+from django.shortcuts import get_object_or_404
 
 from rest_framework import status
 from rest_framework import viewsets
@@ -34,6 +35,19 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+    @list_route(methods=['get'])
+    def lookup(self, request):
+        if request.method != 'GET':
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+        params = request.query_params
+        if 'username' not in params:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        user = get_object_or_404(self.queryset, username=params['username'])
+        serializer = self.serializer_class(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @list_route()
     def available(self, request):
