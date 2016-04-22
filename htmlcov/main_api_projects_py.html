@@ -633,7 +633,7 @@
 <p id="t272" class="stm mis">&nbsp; &nbsp; &nbsp; &nbsp; <span class="key">if</span> <span class="key">not</span> <span class="nam">self</span><span class="op">.</span><span class="nam">project_owner</span><span class="op">(</span><span class="nam">request</span><span class="op">,</span> <span class="nam">project</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t273" class="stm mis">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="key">return</span> <span class="nam">Response</span><span class="op">(</span><span class="nam">status</span><span class="op">=</span><span class="nam">status</span><span class="op">.</span><span class="nam">HTTP_404_NOT_FOUND</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t274" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t275" class="stm mis">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">data</span> <span class="op">=</span> <span class="nam">request</span><span class="op">.</span><span class="nam">data</span><span class="strut">&nbsp;</span></p>
+<p id="t275" class="stm mis">&nbsp; &nbsp; &nbsp; &nbsp; <span class="nam">data</span> <span class="op">=</span> <span class="nam">request</span><span class="op">.</span><span class="nam">query_params</span><span class="strut">&nbsp;</span></p>
 <p id="t276" class="stm mis">&nbsp; &nbsp; &nbsp; &nbsp; <span class="key">if</span> <span class="str">&#39;user&#39;</span> <span class="key">not</span> <span class="key">in</span> <span class="nam">data</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t277" class="stm mis">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="key">return</span> <span class="nam">Response</span><span class="op">(</span><span class="nam">status</span><span class="op">=</span><span class="nam">status</span><span class="op">.</span><span class="nam">HTTP_400_BAD_REQUEST</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t278" class="pln"><span class="strut">&nbsp;</span></p>
@@ -658,7 +658,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.org">coverage.py v4.0.3</a>,
-            created at 2016-04-22 18:32
+            created at 2016-04-22 20:11
         </p>
     </div>
 </div>
