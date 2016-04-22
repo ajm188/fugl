@@ -62,6 +62,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         user = auth.authenticate(username=username, password=password)
         if user is not None:
             auth.login(request, user)
-            return Response(status=status.HTTP_200_OK)
+            serializer = self.serializer_class(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)

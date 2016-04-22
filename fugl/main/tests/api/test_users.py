@@ -98,3 +98,11 @@ class UserViewSetTestCase(FuglTestCase):
         self.assertIn(b'false', resp.content)
 
         user.delete()
+
+    def test_auth(self):
+        user = self.create_user(username='other', password='other')
+        data = {'username': 'other', 'password': 'other'}
+
+        resp = self.client.post('/users/authenticate/', data=data)
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn('id', resp.data)
