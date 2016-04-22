@@ -15,8 +15,22 @@ from main.util import UserAccess
 class PostViewSet(viewsets.GenericViewSet):
 
     queryset = Post.objects.all()
+    project_queryset = Project.objects.all()
     serializer_class = PostSerializer
     permission_classes = (IsAuthenticated,)
+
+    def list(self, request):
+        if 'project' not in request.query_params:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        proj_id = request.query_params['project']
+        project = get_object_or_404(self.project_queryset, pk=proj_id)
+
+        if UserAccess(request.user).can_view(project):
+            posts = self.queryset.filter(project=project)
+            serializer = self.serializer_class(posts, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def create(self, request):
         if 'project' not in request.data:
