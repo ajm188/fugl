@@ -524,3 +524,82 @@ class DeletePagePluginTestCase(FuglViewTestCase):
         url = self._url.format(pk=-1)
         resp = self.client.delete(url)
         self.assertEqual(resp.status_code, 404)
+
+
+class AvailablePagePluginTestCase(FuglViewTestCase):
+
+    url = '/page_plugins/available/'
+
+    def setUp(self):
+        super().setUp()
+
+        self.project = self.create_project('project1', '',
+            owner=self.admin_user)
+        self.plug = self.create_page_plugin('plug', project=self.project)
+        self.other_user = self.create_user('other-user')
+        self.other_project = self.create_project('other_project', '',
+            owner=self.other_user)
+
+        self.login(user=self.admin_user)
+
+    def tearDown(self):
+        self.plug.delete()
+        self.project.delete()
+        self.other_project.delete()
+        self.other_user.delete()
+
+        super().tearDown()
+
+    def test_available_for_available(self):
+        data = {'title': self.plug.title + 'blah', 'project': self.project.id}
+
+        resp = self.client.get(self.url, data)
+        self.assertEqual(resp.status_code, 200)
+
+        self.assertIn('available', resp.data)
+        self.assertTrue(resp.data['available'])
+
+    def test_available_for_taken(self):
+        data = {'title': self.plug.title, 'project': self.project.id}
+
+        resp = self.client.get(self.url, data)
+        self.assertEqual(resp.status_code, 200)
+
+        self.assertFalse(resp.data['available'])
+
+    def test_available_bad_data(self):
+        resp = self.client.get(self.url)
+        self.assertEqual(resp.status_code, 400)
+
+    def test_available_wrong_method(self):
+        resp = self.client.post(self.url, data={})
+        self.assertEqual(resp.status_code, 405)
+
+    def test_view_access(self):
+        access = self.create_access(self.admin_user, self.other_project,
+            can_edit=False)
+        plug = self.create_page_plugin('other-plug',
+            project=self.other_project)
+
+        data = {'title': 'other-plug', 'project': self.other_project.id}
+        resp = self.client.get(self.url, data)
+        self.assertEqual(resp.status_code, 200)
+        self.assertFalse(resp.data['available'])
+
+        data['title'] = 'blah'
+        resp = self.client.get(self.url, data)
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(resp.data['available'])
+
+        plug.delete()
+        access.delete()
+
+    def test_no_access(self):
+        data = {'title': 'other-plug', 'project': self.other_project.id}
+        resp = self.client.get(self.url, data)
+        self.assertEqual(resp.status_code, 404)
+
+    def test_non_existent(self):
+        data = {'title': '', 'project': -1}
+        resp = self.client.get(self.url, data)
+        self.assertEqual(resp.status_code, 404)
