@@ -272,7 +272,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         if not self.project_owner(request, project):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        data = request.data
+        data = request.query_params
         if 'user' not in data:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
