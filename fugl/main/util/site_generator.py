@@ -49,7 +49,7 @@ class SiteGenerator(object):
                     'Pelican returned status: {0}'.format(returncode),
                 )
 
-            archive = self.zip_output(project, site_dir)
+            archive = self.zip_output(site_dir)
 
         return GeneratedSite(self.project.title, datetime.now(), archive)
 
