@@ -1,100 +1,150 @@
-from django.views.generic.base import View
-from django.utils.text import slugify
-from django.template.response import TemplateResponse
-from django.http import HttpResponse
-from main.models import Project
-from .protected_view import ProtectedViewMixin
-from subprocess import Popen
-from datetime import datetime
-from collections import Counter
-from pprint import pprint
-import tempfile
-import zipfile
-import shlex
 import os
+import tempfile
+import shlex
+import zipfile
+from collections import Counter
+from datetime import datetime
+from subprocess import Popen
+
+from django.utils.text import slugify
 
 
-class SiteGenerationView(ProtectedViewMixin, View):
-    def get(self, request, *args, **kwargs):
-        try:
-            return self._do_generate(request, args, kwargs)
-        except Exception as e:
-            pprint(e)
-            ctx = {
-                'message': "Actually, we derped. You can redeem this"
-                           " page for a free hug from the Fugle. Sorry :(",
-                'link_url': '/project/{0}/{1}'.format(kwargs['owner'], kwargs['proj_title']),
-                'link_text': 'Return to Project Home',
-            }
-            return TemplateResponse(request, 'error.html', context=ctx)
+class GeneratedSite(object):
 
-    def _do_generate(self, request, *args, **kwargs):
-        project_title = request.resolver_match.kwargs['proj_title']
-        project = Project.objects.get(owner=request.user, title=project_title)
+    def __init__(self, title, timestamp, archive):
+        self.title = title
+        self.timestamp = timestamp
+        self.archive = archive
 
+    def filename(self):
+        strtime = self.timestamp.strftime('%Y-%m-%d_%H%M')
+        filename = '{title}_output_{timestamp}.zip'.format(title=self.title,
+                                                           timestamp=strtime)
+        #resp = HttpResponse(content, content_type='application/zip')
+        #resp['Content-Disposition'] = self.content_disposition_str()
+        #resp['Content-Length'] = self.content_length()
+        return filename
+
+    def content_disposition_str(self):
+        format_str = 'attachment; filename={filename}'
+        return format_str.format(filename=self.filename())
+
+    def content_length(self):
+        return len(self.archive)
+
+
+class SiteGenerator(object):
+
+    def __init__(self, project):
+        self.project = project
+
+    def generate(self):
+        archive = None
         with tempfile.TemporaryDirectory() as site_dir:
-            # Put settings and plugin(s) in the root
-            with open(os.path.join(site_dir, 'pelicanconf.py'), 'w') as f:
-                f.write(project.get_pelican_conf())
-
-            p2slug = {'pages': [], 'posts': []}
-            # Write each Page into `content/pages/`
-            pagelike_counter = Counter()
-            for page in project.page_set.all():
-                page_dir = os.path.join(site_dir, 'content', 'pages')
-                mkdirs(page_dir)
-
-                filename = get_filename(page, pagelike_counter)
-                p2slug['pages'].append((page, filename))
-                page_file = os.path.join(page_dir, filename) + '.md'
-                with open(page_file, 'w') as f:
-                    f.write(page.get_markdown(slug=filename))
-
-            # Write each Post into `content/<category>`
-            for post in project.post_set.all():
-                post_dir = os.path.join(site_dir, 'content', slugify(post.category.title))
-                mkdirs(post_dir)
-
-                filename = get_filename(post, pagelike_counter)
-                p2slug['posts'].append((post, filename))
-                post_file = os.path.join(post_dir, filename) + '.md'
-                with open(post_file, 'w') as f:
-                    f.write(post.get_markdown(slug=filename))
-
-            context = {
-                'plugin_dict': get_plugin_dict(p2slug)
-            }
-            with open(os.path.join(site_dir, 'page_plugins.py'), 'w') as f:
-                f.write(PLUGIN_BODY % context)
-
-            # now that we've written out all files, call into pelican
-            returncode = pelican_generate(site_dir, 'content', 'pelicanconf.py')
+            self.generate_site_dir(site_dir)
+            returncode = pelican_generate(
+                site_dir,
+                'content',
+                'pelicanconf.py',
+            )
             if returncode != 0:
-                raise RuntimeError('Pelican returned status: {0}'.format(returncode))
+                raise RuntimeError(
+                    'Pelican returned status: {0}'.format(returncode),
+                )
 
-            # now zip the output (in RAM)...
-            tempzipfile = tempfile.NamedTemporaryFile(delete=True)
-            output_dir = os.path.join(site_dir, 'output')
+            archive = self.zip_ouput(project, site_dir)
 
-            with zipfile.ZipFile(tempzipfile, 'w', zipfile.ZIP_DEFLATED) as arc:
-                for dirpath, _, filenames in os.walk(output_dir):
-                    for filename in filenames:
-                        path = os.path.join(dirpath, filename)
-                        arc_path = os.path.relpath(path, output_dir)
-                        arc.write(path, arc_path)
+        return GeneratedSite(self.project.title, datetime.now(), archive)
 
-            # load the zipfile's content into memory...
-            with open(tempzipfile.name, 'rb') as f:
-                content = f.read()
-            tempzipfile.close()
+    def zip_output(self, site_dir):
+        # now zip the output (in RAM)...
+        tempzipfile = tempfile.NamedTemporaryFile(delete=True)
+        output_dir = os.path.join(site_dir, 'output')
 
-            # ...and return the zipfile to the user
-            filename = '{0}_output_{1}.zip'.format(project.title,
-                                                   datetime.now().strftime('%Y-%m-%d_%H%M'))
-            resp = HttpResponse(content, content_type='application/zip')
-            resp['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
-            resp['Content-Length'] = len(content)
-            return resp
+        with zipfile.ZipFile(tempzipfile, 'w', zipfile.ZIP_DEFLATED) as arc:
+            for dirpath, _, filenames in os.walk(output_dir):
+                for filename in filenames:
+                    path = os.path.join(dirpath, filename)
+                    arc_path = os.path.relpath(path, output_dir)
+                    arc.write(path, arc_path)
+
+        # load the zipfile's content into memory...
+        with open(tempzipfile.name, 'rb') as f:
+            content = f.read()
+        tempzipfile.close()
+        return content
+
+    def generate_site_dir(self, site_dir):
+        self.write_pelican_conf(site_dir)
+
+        content_counter = Counter()
+        written_pages = self.write_pages(
+            self.project.page_set.all(),
+            content_counter,
+            site_dir,
+        )
+        written_posts = self.write_posts(
+            self.project.post_set.all(),
+            content_counter,
+            site_dir,
+        )
+        slug_dict = {'pages': written_pages, 'posts': written_posts}
+        self.write_page_plugins(self.get_plugin_dict(slug_dict), site_dir)
+
+    def get_plugin_dict(self, slug_dict):
+        plugin_dict = {'pages': {}, 'posts': {}}
+        for page, slug in slug_dict['pages']:
+            head = '\n'.join([p.head_markup for p in page.post_plugins.all()])
+            body = '\n'.join([p.body_markup for p in page.post_plugins.all()])
+            plugin_dict['pages'][slug] = (head, body)
+
+        for post, slug in slug_dict['posts']:
+            head = '\n'.join([p.head_markup for p in post.post_plugins.all()])
+            body = '\n'.join([p.body_markup for p in post.post_plugins.all()])
+            plugin_dict['posts'][slug] = (head, body)
+        plugin_dict_str = str(plugin_dict)
+        return plugin_dict_str
+
+    def write_pages(self, pages, content_counter, site_dir):
+        written_pages = []
+        # Write each Page into `content/pages/`
+        for page in pages:
+            page_dir = os.path.join(site_dir, 'content', 'pages')
+            mkdirs(page_dir)
+
+            filename = get_filename(page, content_counter)
+            written_pages.append((page, filename))
+            page_file = os.path.join(page_dir, filename) + '.md'
+            with open(page_file, 'w') as f:
+                f.write(page.get_markdown(slug=filename))
+        return written_pages
+
+    def write_posts(self, posts, content_counter, site_dir):
+        written_posts = []
+        # Write each Post into `content/<category>`
+        for post in posts:
+            post_dir = os.path.join(
+                site_dir,
+                'content',
+                slugify(post.category.title),
+            )
+            mkdirs(post_dir)
+
+            filename = get_filename(post, content_counter)
+            written_posts.append((post, filename))
+            post_file = os.path.join(post_dir, filename) + '.md'
+            with open(post_file, 'w') as f:
+                f.write(post.get_markdown(slug=filename))
+        return written_posts
+
+    def write_pelican_conf(self, site_dir):
+        with open(os.path.join(site_dir, 'pelicanconf.py'), 'w') as f:
+            f.write(self.project.get_pelican_conf())
+
+    def write_page_plugins(self, plugin_dict, site_dir):
+        context = {'plugin_dict': plugin_dict}
+        with open(os.path.join(site_dir, 'page_plugins.py'), 'w') as f:
+            f.write(PLUGIN_BODY % context)
 
 
 def get_filename(pagelike, pagelike_counter):
@@ -130,21 +180,6 @@ def mkdirs(dir):
     except OSError:
         # if we fail, we don't care
         pass
-
-
-def get_plugin_dict(p2slug):
-    plugin_dict = {'pages': {}, 'posts': {}}
-    for page, slug in p2slug['pages']:
-        head = '\n'.join([p.head_markup for p in page.post_plugins.all()])
-        body = '\n'.join([p.body_markup for p in page.post_plugins.all()])
-        plugin_dict['pages'][slug] = (head, body)
-
-    for post, slug in p2slug['posts']:
-        head = '\n'.join([p.head_markup for p in post.post_plugins.all()])
-        body = '\n'.join([p.body_markup for p in post.post_plugins.all()])
-        plugin_dict['posts'][slug] = (head, body)
-    plugin_dict_str = str(plugin_dict)
-    return plugin_dict_str
 
 
 PLUGIN_BODY = '''
