@@ -15,6 +15,10 @@ class ThemeViewSet(viewsets.GenericViewSet):
     serializer_class = ThemeSerializer
     permission_classes = (IsAuthenticated,)
 
+    def list(self, request):
+        serializer = self.serializer_class(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def create(self, request):
         request.data['creator'] = request.user.id
         serializer = self.serializer_class(data=request.data)

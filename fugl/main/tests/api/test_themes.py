@@ -216,3 +216,28 @@ class DeleteThemeTestCase(FuglViewTestCase):
         resp = self.client.delete(url)
         self.assertEqual(resp.status_code, 404)
         self.assertEqual(Theme.objects.count(), themes)
+
+
+class ListThemeTestCase(FuglViewTestCase):
+
+    url = '/themes/'
+
+    def setUp(self):
+        super().setUp()
+        self.login(user=self.admin_user)
+
+    def test_listing_themes(self):
+        theme1 = self.create_theme('theme1', 'markup', creator=self.admin_user)
+        theme2 = self.create_theme('theme2', 'markup', creator=self.admin_user)
+
+        resp = self.client.get(self.url)
+        self.assertEqual(resp.status_code, 200)
+
+        themes = resp.data[1:]  # chop off the default_theme
+        self.assertEqual(len(themes), 2)
+
+        t1 = themes[0]
+        self.assertEqual(t1['title'], 'theme1')
+
+        theme1.delete()
+        theme2.delete()
