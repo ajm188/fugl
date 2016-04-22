@@ -20,9 +20,6 @@ class GeneratedSite(object):
         strtime = self.timestamp.strftime('%Y-%m-%d_%H%M')
         filename = '{title}_output_{timestamp}.zip'.format(title=self.title,
                                                            timestamp=strtime)
-        #resp = HttpResponse(content, content_type='application/zip')
-        #resp['Content-Disposition'] = self.content_disposition_str()
-        #resp['Content-Length'] = self.content_length()
         return filename
 
     def content_disposition_str(self):
