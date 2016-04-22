@@ -72,7 +72,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         if request.method != 'DELETE':
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-        auth.logout(request.user)
+        auth.logout(request)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @list_route(methods=['get'])
