@@ -756,3 +756,27 @@ class LookupProjectTestCase(FuglViewTestCase):
     def test_bad_method(self):
         resp = self.client.post(self.url)
         self.assertEqual(resp.status_code, 405)
+
+
+class GenerateProjectTestCase(FuglViewTestCase):
+
+    url = '/projects/{pk}/generate/'
+
+    def setUp(self):
+        super().setUp()
+
+        self.project = self.create_project('simple', owner=self.admin_user)
+        self.page = self.create_page('my-page', content='this is a page',
+            project=self.project)
+        self.login(user=self.admin_user)
+
+    def tearDown(self):
+        self.project.delete()
+        self.page.delete()
+
+        super().tearDown()
+
+    def test_it_works(self):
+        url = self.url.format(pk=self.project.id)
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 201)
