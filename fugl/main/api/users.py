@@ -1,3 +1,5 @@
+from django.contrib import auth
+
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import list_route
@@ -46,3 +48,20 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         else:
             resp_data['available'] = True
         return Response(resp_data, status=status.HTTP_200_OK)
+
+    @list_route(methods=['post'])
+    def authenticate(self, request):
+        if request.method != 'POST':
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        data = request.data
+        if 'username' not in data or 'password' not in data:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        username = data['username']
+        password = data['password']
+        user = auth.authenticate(username=username, password=password)
+        if user is not None:
+            auth.login(request, user)
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
